@@ -62,6 +62,12 @@ class ExpenseTracker(wx.Frame):
         self.amount_input = wx.TextCtrl(self.panel)
         self.sizer.Add(self.amount_input, 0, wx.ALL | wx.EXPAND, 5)
 
+        # Add an input form for entering percentages or shares for each debtor
+        self.split_label = wx.StaticText(self.panel, label="Enter split percentages (comma-separated):")
+        self.sizer.Add(self.split_label, 0, wx.ALL, 5)
+        self.split_input = wx.TextCtrl(self.panel)
+        self.sizer.Add(self.split_input, 0, wx.ALL | wx.EXPAND, 5)
+
         # Button to add an expense
         self.add_expense_button = wx.Button(self.panel, label="Add Expense")
         self.add_expense_button.Bind(wx.EVT_BUTTON, self.on_add_expense)
@@ -138,6 +144,10 @@ class ExpenseTracker(wx.Frame):
         user_from_name = self.user_from_choice.GetStringSelection()
         selected_debtors_indexes = self.user_to_choice.GetCheckedItems()
         debtors_names = [self.user_to_choice.GetString(idx) for idx in selected_debtors_indexes]
+        
+        # Get Expense share values
+        split_input = self.split_input.GetValue()
+        split_percentages = list(map(float, split_input.split(',')))
 
         # Get the expense amount
         amount = self.amount_input.GetValue()
@@ -157,17 +167,30 @@ class ExpenseTracker(wx.Frame):
             wx.MessageBox("Please enter a valid numeric amount.", "Error")
             return
 
-        # Split the expense amount equally among debtors
-        people_number = len(debtors_names)+1 if len(debtors_names) > 1 else 1
-        per_person_amount = amount / people_number
+        if split_input and len(split_percentages) != len(debtors):
+            wx.MessageBox("Split percentages do not match the number of debtors.", "Error")
+            return
 
+        total_percentage = sum(split_percentages)
+        if total_percentage != 100:
+            wx.MessageBox("Percentages must total 100%.", "Error")
+            return
+        
         # Get user objects for the payer and debtors
         payer = next((user for user in self.current_group.members if user.name == user_from_name), None)
         debtors = [user for user in self.current_group.members if user.name in debtors_names]
 
-        # Update the group's expense graph
-        for debtor in debtors:
-            self.current_group.graph.add_edge(payer, debtor, per_person_amount)
+        # Split the expense amount equally among debtors
+        for debtor, percentage in zip(debtors, split_percentages):
+            amount_per_debtor = (amount * percentage) / 100
+            self.current_group.graph.add_edge(payer, debtor, amount_per_debtor)
+        if not split_input:
+            people_number = len(debtors_names)+1 if len(debtors_names) > 1 else 1
+            per_person_amount = amount / people_number
+
+            # Update the group's expense graph
+            for debtor in debtors:
+                self.current_group.graph.add_edge(payer, debtor, per_person_amount)
 
         # Clear the input fields
         self.amount_input.Clear()
