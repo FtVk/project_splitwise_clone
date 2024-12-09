@@ -147,10 +147,13 @@ class ExpenseTracker(wx.Frame):
         
         # Get Expense share values
         split_input = self.split_input.GetValue()
-        split_percentages = list(map(float, split_input.split(',')))
 
         # Get the expense amount
         amount = self.amount_input.GetValue()
+        
+        # Get user objects for the payer and debtors
+        payer = next((user for user in self.current_group.members if user.name == user_from_name), None)
+        debtors = [user for user in self.current_group.members if user.name in debtors_names]
 
         # Validation
         if not user_from_name or not debtors_names or not amount:
@@ -167,24 +170,22 @@ class ExpenseTracker(wx.Frame):
             wx.MessageBox("Please enter a valid numeric amount.", "Error")
             return
 
-        if split_input and len(split_percentages) != len(debtors):
-            wx.MessageBox("Split percentages do not match the number of debtors.", "Error")
-            return
+        if split_input:
+            split_percentages = list(map(float, split_input.split(',')))
+            if len(split_percentages) != len(debtors):
+                wx.MessageBox("Split percentages do not match the number of debtors.", "Error")
+                return
 
-        total_percentage = sum(split_percentages)
-        if total_percentage != 100:
-            wx.MessageBox("Percentages must total 100%.", "Error")
-            return
-        
-        # Get user objects for the payer and debtors
-        payer = next((user for user in self.current_group.members if user.name == user_from_name), None)
-        debtors = [user for user in self.current_group.members if user.name in debtors_names]
-
-        # Split the expense amount equally among debtors
-        for debtor, percentage in zip(debtors, split_percentages):
-            amount_per_debtor = (amount * percentage) / 100
-            self.current_group.graph.add_edge(payer, debtor, amount_per_debtor)
-        if not split_input:
+            total_percentage = sum(split_percentages)
+            if total_percentage != 100:
+                wx.MessageBox("Percentages must total 100%.", "Error")
+                return
+            
+            # Split the expense amount equally among debtors
+            for debtor, percentage in zip(debtors, split_percentages):
+                amount_per_debtor = (amount * percentage) / 100
+                self.current_group.graph.add_edge(payer, debtor, amount_per_debtor)
+        else:
             people_number = len(debtors_names)+1 if len(debtors_names) > 1 else 1
             per_person_amount = amount / people_number
 
@@ -195,7 +196,7 @@ class ExpenseTracker(wx.Frame):
         # Clear the input fields
         self.amount_input.Clear()
         self.user_to_choice.SetChecked([])  # Uncheck all items in the checklist
-        wx.MessageBox(f"Expense of {amount} has been added. Each debtor owes {per_person_amount:.2f}.", "Success")
+        wx.MessageBox(f"Expense of {amount} has been added.", "Success")
 
     def on_view_balance(self, event):
         # Event handler for viewing balances
