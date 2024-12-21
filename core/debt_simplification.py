@@ -45,5 +45,6 @@ class DebtSimplification:
             else:
                 creditors[creditor] = credit_amount
 
-        # Refresh balance sheet
-        self.graph.recalculate_balances()
+        # Refresh balance sheet using BalanceCalculation
+        calculator = BalanceCalculation(self.graph)
+        calculator.recalculate_balances()
