@@ -15,7 +15,7 @@ class ExpenseGraph:
         # Graph to store financial obligations
         self.graph = defaultdict(dict)
         # Balance sheet for all users
-        self.balance = defaultdict(float)
+        self.balance = defaultdict(float)  # Example: {"Alice": -50, "Bob": 50}
 
     def add_edge(self, from_user, to_user, amount):
         """Add or update a financial obligation between users."""
@@ -123,23 +123,30 @@ class Group:
 
 # Example usage
 if __name__ == "__main__":
-    graph = ExpenseGraph()
+    # Step 1: Create a group
+    group = Group("Friends")
+    group.add_member(User("Alice"))
+    group.add_member(User("Bob"))
+    group.add_member(User("Charlie"))
 
-    graph.add_edge("A", "B", 50)  # A owes B $50
-    graph.add_edge("B", "C", 30)
-    graph.add_edge("C", "D", 10)
-    graph.add_edge("D", "B", 40)
+    # Step 2: Add some expenses within the group
+    group.graph.add_edge("Me", "Alice", 20)  # Me owes Alice $20
+    group.graph.add_edge("Alice", "Bob", 50)  # Alice owes Bob $50
+    group.graph.add_edge("Bob", "Charlie", 30)  # Bob owes Charlie $30
+    group.graph.add_edge("Charlie", "Me", 10)  # Charlie owes Me $10
 
     print("=== Before Simplification ===")
-    graph.visualize_graph()
+    group.graph.visualize_graph()
 
-    simplifier = DebtSimplification(graph)
+    # Step 3: Simplify the debts within the group
+    simplifier = DebtSimplification(group.graph)
     simplifier.simplify_debts()
 
     print("\n=== After Simplification ===")
-    graph.visualize_graph()
+    group.graph.visualize_graph()
 
-    calculator = BalanceCalculation(graph)
+    # Step 4: Recalculate and get balances within the group
+    calculator = BalanceCalculation(group.graph)
     balances = calculator.get_balances()
     print("\n=== Final Balances ===")
     print(balances)
