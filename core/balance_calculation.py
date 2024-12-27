@@ -85,12 +85,22 @@ class BalanceGraph:
         with open(filename, "w") as file:
             json.dump(data, file, indent=4)
 
+    def balance_to_dict(self):
+        """Convert balance graph to a dictionary format."""
+        return {
+            "graph": {from_user: {to_user: amount for to_user, amount in edges.items()}
+                    for from_user, edges in self.graph.items()},
+            "balance": dict(self.balance)
+        }
+
     # Deserialization: Load graph and balances from a JSON file
     def load_from_file(self, filename):
         with open(filename, "r") as file:
             data = json.load(file)
             self.graph = defaultdict(dict, {user: edges for user, edges in data["graph"].items()})
             self.balance = defaultdict(float, data["balance"])
+
+
 
 class DebtSimplification:
     def __init__(self, balance_graph):
@@ -152,23 +162,23 @@ class DebtSimplification:
                 self.graph.update_balance(from_user, to_user, amount)
 
 # Initialize the ExpenseGraph
-expense_graph = ExpenseGraph()
+#expense_graph = ExpenseGraph()
+
 
 # Add transactions
-expense_graph.add_transaction("Alice", "Bob", 50, "Lunch")
-expense_graph.add_transaction("Alice", "Charlie", 30, "Lunch")
-expense_graph.add_transaction("Bob", "Charlie", 30, "Dinner")
-expense_graph.add_transaction("Charlie", "Alice", 40, "Gift")
+#expense_graph.add_transaction("Alice", "Bob", 50, "Lunch")
+#expense_graph.add_transaction("Alice", "Charlie", 30, "Lunch")
+#expense_graph.add_transaction("Bob", "Charlie", 30, "Dinner")
+#expense_graph.add_transaction("Charlie", "Alice", 40, "Gift")
 
-print("\n=== Detailed Transactions ===")
-expense_graph.visualize_transactions()
+#print("\n=== Detailed Transactions ===")
+#expense_graph.visualize_transactions()
 
-print("\n=== Simplified Balances Before Simplification ===")
-expense_graph.balance_graph.visualize_graph()
+#print("\n=== Simplified Balances Before Simplification ===")
+#expense_graph.balance_graph.visualize_graph()
 
 # Simplify debts
-expense_graph.simplify_balances()
+#expense_graph.simplify_balances()
 
-print("\n=== Simplified Balances After Simplification ===")
-expense_graph.balance_graph.visualize_graph()
-
+#print("\n=== Simplified Balances After Simplification ===")
+#expense_graph.balance_graph.visualize_graph()
