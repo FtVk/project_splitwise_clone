@@ -1,38 +1,47 @@
 import json
 from collections import defaultdict
 from datetime import datetime
+from core.balance_calculation import BalanceGraph
+from core.debt_simplification import DebtSimplification
 
 class ExpenseGraph:
     def __init__(self):
-        # Graph to store financial obligations
-        self.graph = defaultdict(list)
-        # Balance sheet for all users
-        self.balance = defaultdict(float)
+        # Graph to store detailed transaction history
+        self.graph = defaultdict(list)  # Stores detailed transactions
+        self.balance_graph = BalanceGraph()    # Underlying balance graph
 
-
-    def add_transaction(self, from_user, to_user, amount, category):
-        """Add a transaction as an edge between two users."""
-
+    def add_transaction(self, from_user, to_user, amount, category, timestamp=None):
+        """Add a transaction between users and update the balance graph."""
         if amount <= 0:
             raise ValueError("Amount must be positive.")
         
-        timestamp = datetime.utcnow().isoformat()
-
+        if timestamp is None:
+            timestamp = datetime.utcnow().isoformat()
+        
         transaction = {
             "to": to_user,
             "amount": amount,
             "category": category,
             "timestamp": timestamp
         }
+        
+        # Add the transaction to the history
         self.graph[from_user].append(transaction)
 
-         # Update balance sheet
-        self.update_balance(from_user, to_user, amount)
+        # Update the balance graph
+        self.balance_graph.add_edge(from_user, to_user, amount)
 
-    def update_balance(self, from_user, to_user, amount):
-        """Update balances for users involved in a transaction."""
-        self.balance[from_user] -= amount
-        self.balance[to_user] += amount
+    def visualize_transactions(self):
+        """Visualize the detailed transactions."""
+        for user, transactions in self.graph.items():
+            print(f"Transactions by {user}:")
+            for transaction in transactions:
+                print(f"  -> {transaction['to']} | {transaction['amount']} | {transaction['category']} | {transaction['timestamp']}")
+
+    def simplify_balances(self):
+        """Simplify the underlying balance graph."""
+        simplifier = DebtSimplification(self.balance_graph)
+        simplifier.simplify_debts()
 
     def get_transactions(self, user):
         """Get all transactions involving a specific user."""
@@ -55,4 +64,3 @@ class ExpenseGraph:
 
             for neighbor, amount in edges.items():
                 print(f"{user} owes {neighbor}: {amount}")
-
