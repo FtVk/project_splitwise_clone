@@ -74,7 +74,7 @@ def extract_receipt_details(image_path):
     except Exception as e:
         return {"error": str(e)}
 
-def process_receipt(image_path=None):
+def process_expense_receipt(image_path=None):
     """
     Processes a receipt image from the given path or captures one using the camera.
 
@@ -118,4 +118,35 @@ def process_receipt(image_path=None):
     if image_path:
         return extract_receipt_details(image_path)
 
-
+def extract_payment_amount(image_path=None):
+    """
+    Extracts the total amount from an English receipt image or a captured photo.
+    Args:
+        image_path (str, optional): The path to the image file. If None, a photo will be taken.
+    Returns:
+        str: The extracted amount or an error message.
+    """
+    try:
+        # Capture an image if no file is provided
+        if image_path is None:
+            image_path = capture_image()
+            if image_path is None:
+                return "No image was captured."
+        # Preprocess the image
+        image = preprocess_image(image_path)
+        
+        # Perform OCR
+        text = pytesseract.image_to_string(image, lang='eng', config="--psm 6")
+        
+        # Search for the amount near keywords
+        amount_match = re.search(r"(Total|Amount|TOTAL|AMOUNT):?\s*\$?(\d{1,3}(?:,\d{3})*(?:\.\d{2})?)", text, re.IGNORECASE)
+        if amount_match:
+            return amount_match.group(2)
+        else:
+            return "No amount found in the receipt text."
+    except Exception as e:
+        return f"Error processing the image: {str(e)}"
+    finally:
+        # Cleanup temporary file if created
+        if image_path and os.path.exists(image_path) and not os.path.isabs(image_path):
+            os.remove(image_path)
