@@ -1,0 +1,157 @@
+{
+    "groups": {
+        "friends": {
+            "nodes": [
+                "Me",
+                "fatemeh",
+                "hedieh"
+            ],
+            "edges": [
+                {
+                    "from": "Me",
+                    "to": "fatemeh",
+                    "amount": 25.0,
+                    "category": "food",
+                    "timestamp": "2024-12-27T15:46:19.628678"
+                },
+                {
+                    "from": "Me",
+                    "to": "fatemeh",
+                    "amount": 40,
+                    "category": "food",
+                    "timestamp": "2024-12-27T15:46:19.628689"
+                },
+                {
+                    "from": "Me",
+                    "to": "fatemeh",
+                    "amount": 40,
+                    "category": "food",
+                    "timestamp": "2024-12-27T15:46:19.628692"
+                },
+                {
+                    "from": "Me",
+                    "to": "fatemeh",
+                    "amount": 40,
+                    "category": "food",
+                    "timestamp": "2024-12-27T15:46:19.628695"
+                },
+                {
+                    "from": "Me",
+                    "to": "fatemeh",
+                    "amount": 40,
+                    "category": "food",
+                    "timestamp": "2024-12-27T15:46:19.628697"
+                },
+                {
+                    "from": "Me",
+                    "to": "fatemeh",
+                    "amount": 40,
+                    "category": "food",
+                    "timestamp": "2024-12-27T15:46:25.789965"
+                },
+                {
+                    "from": "fatemeh",
+                    "to": "Me",
+                    "amount": 25,
+                    "category": "trip",
+                    "timestamp": "2024-12-27T15:55:55.120576"
+                },
+                {
+                    "from": "fatemeh",
+                    "to": "Me",
+                    "amount": 25,
+                    "category": "snap",
+                    "timestamp": "2024-12-27T15:57:26.922741"
+                },
+                {
+                    "from": "fatemeh",
+                    "to": "Me",
+                    "amount": 25,
+                    "category": "food",
+                    "timestamp": "2024-12-27T15:58:56.577430"
+                }
+            ],
+            "balance_graph": {
+                "nodes": [
+                    "Me",
+                    "fatemeh"
+                ],
+                "edges": [
+                    {
+                        "from": "Me",
+                        "to": "fatemeh",
+                        "amount": 600.0
+                    },
+                    {
+                        "from": "fatemeh",
+                        "to": "Me",
+                        "amount": 75
+                    }
+                ]
+            }
+        },
+        "family": {
+            "nodes": [
+                "Me",
+                "baba",
+                "maman"
+            ],
+            "edges": [
+                {
+                    "from": "Me",
+                    "to": "maman",
+                    "amount": 41.6,
+                    "category": "food",
+                    "timestamp": "2024-12-27T17:55:10.820394"
+                },
+                {
+                    "from": "Me",
+                    "to": "baba",
+                    "amount": 20,
+                    "category": "food",
+                    "timestamp": "2024-12-27T18:00:34.555074"
+                },
+                {
+                    "from": "maman",
+                    "to": "Me",
+                    "amount": 1.9200000000000002,
+                    "category": "snap",
+                    "timestamp": "2024-12-27T17:56:27.390934"
+                },
+                {
+                    "from": "maman",
+                    "to": "Me",
+                    "amount": 1.9200000000000002,
+                    "category": "snap",
+                    "timestamp": "2024-12-27T17:57:10.677118"
+                },
+                {
+                    "from": "baba",
+                    "to": "maman",
+                    "amount": 50,
+                    "category": "food",
+                    "timestamp": "2024-12-27T18:01:01.553735"
+                }
+            ],
+            "balance_graph": {
+                "nodes": [
+                    "Me",
+                    "baba",
+                    "maman"
+                ],
+                "edges": [
+                    {
+                        "from": "Me",
+                        "to": "maman",
+                        "amount": 57.76
+                    },
+                    {
+                        "from": "baba",
+                        "to": "maman",
+                        "amount": 29.999999999999993
+                    }
+                ]
+            }
+        }
+    }
+}
