@@ -1,6 +1,8 @@
 from flask import Flask, request, jsonify
 from core.graph import ExpenseGraph  # Use your graph
 from core.debt_simplification import DebtSimplification
+from core.balance_calculation import BalanceGraph
+from core.debt_simplification import DebtSimplification
 from flask_cors import CORS
 from models.group import Group
 from models.user import User
@@ -12,7 +14,7 @@ CORS(app)
 
 # Initialize the graph and load stored users
 expense_graph = ExpenseGraph()
-debt_simplifier = DebtSimplification(expense_graph)
+
 DATA_PATH = "data/graph.json"
 
 # Load groups from JSON file or initialize empty groups
@@ -23,10 +25,19 @@ def load_groups():
             groups = {name: Group(name, members=[User(member) for member in data["nodes"]])
                       for name, data in group_data["groups"].items()}
             for name, data in group_data["groups"].items():
+                # Load transaction edges into the graph
                 for edge in data["edges"]:
                     groups[name].graph.add_transaction(
-                        edge["from"], edge["to"], edge["amount"], edge["category"]
+                        edge["from"], edge["to"], edge["amount"], edge["category"], edge["timestamp"]
                     )
+
+                # Load balance graph
+                if "balance_graph" in data:
+                    balance_graph_data = data["balance_graph"]
+                    for edge in balance_graph_data["edges"]:
+                        groups[name].graph.balance_graph.add_edge(
+                            edge["from"], edge["to"], edge["amount"]
+                        )
             return groups
     return {}
 
@@ -41,10 +52,21 @@ def save_groups(groups):
                      "category": transaction["category"], "timestamp": transaction["timestamp"]}
                     for from_user, transactions in group.graph.graph.items()
                     for transaction in transactions
-                ]
+                ],
+                "balance_graph": {
+                    "nodes": list(set(from_user for from_user in group.graph.balance_graph.graph.keys()) |
+                                  set(to_user for edges in group.graph.balance_graph.graph.values() 
+                                      for to_user in edges.keys())),
+                    "edges": [
+                        {"from": from_user, "to": to_user, "amount": amount}
+                        for from_user, edges in group.graph.balance_graph.graph.items()
+                        for to_user, amount in edges.items()
+                    ]
+                }
             } for name, group in groups.items()
         }
     }
+
     with open(DATA_PATH, "w") as file:
         json.dump(group_data, file, indent=4)
 
@@ -71,6 +93,24 @@ def add_group():
     save_groups(groups)
     return jsonify({"message": f"Group '{group_name}' added successfully."}), 201
 
+@app.route("/groups/<group_name>/balance", methods=["GET"])
+def get_balance_graph(group_name):
+    """Fetch the balance graph for a specific group."""
+    group = groups.get(group_name)
+    if not group:
+        return jsonify({"error": f"Group '{group_name}' not found."}), 404
+
+    balance_graph = group.graph.balance_graph
+    return jsonify({
+        "nodes": list(set(balance_graph.graph.keys()) | 
+                      set(to_user for edges in balance_graph.graph.values() for to_user in edges.keys())),
+        "edges": [
+            {"from": from_user, "to": to_user, "amount": amount}
+            for from_user, edges in balance_graph.graph.items()
+            for to_user, amount in edges.items()
+        ]
+    }), 200
+
 @app.route("/groups/<group_name>/members", methods=["GET"])
 def fetch_group_members(group_name):
     """Fetch members of a specific group."""
@@ -78,7 +118,7 @@ def fetch_group_members(group_name):
     if not group:
         return jsonify({"error": f"Group '{group_name}' not found."}), 404
 
-    return jsonify({"members": [member.name for member in group.members]}), 200
+    return jsonify({"members": list(set(member.name for member in group.members))}), 200
 
 @app.route("/groups/<group_name>/members", methods=["POST"])
 def add_member_to_group(group_name):
@@ -98,7 +138,7 @@ def add_member_to_group(group_name):
 
 @app.route("/groups/<group_name>/transactions", methods=["POST"])
 def add_transaction(group_name):
-    """Add a transaction to a group."""
+    """Add a transaction to a group's expense graph and update the balance graph."""
     group = groups.get(group_name)
     if not group:
         return jsonify({"error": f"Group '{group_name}' not found."}), 404
@@ -108,23 +148,30 @@ def add_transaction(group_name):
     to_user = data.get("to_user")
     amount = data.get("amount")
     category = data.get("category")
+    timestamp = data.get("timestamp")
 
-    if not (from_user and to_user and amount and category):
-        return jsonify({"error": "from_user, to_user, amount, and category are required."}), 400
+    if not all([from_user, to_user, amount, category]):
+        return jsonify({"error": "Missing transaction details"}), 400
 
     try:
-        print(f"Received group_name: {from_user, to_user, float(amount), category}")
-        group.graph.add_transaction(from_user, to_user, float(amount), category)
+        group.graph.add_transaction(from_user, to_user, amount, category, timestamp)
         save_groups(groups)
-        return jsonify({"message": f"Transaction added: {from_user} owes {to_user} ${amount} for {category}."}), 201
+        return jsonify({"message": "Transaction added successfully."}), 200
     except ValueError as e:
         return jsonify({"error": str(e)}), 400
 
-# Simplify debts
-@app.route("/simplify-debts", methods=["GET"])
-def simplify_debts():
-    debt_simplifier.simplify_debts()
-    return jsonify({"message": "Debts simplified successfully."}), 200
+@app.route("/groups/<group_name>/simplify-debts", methods=["POST"])
+def simplify_debts(group_name):
+    """Simplify debts for a specific group."""
+    group = groups.get(group_name)
+    if not group:
+        return jsonify({"error": f"Group '{group_name}' not found."}), 404
+
+    simplifier = DebtSimplification(group.graph.balance_graph)
+    simplifier.simplify_debts()
+    save_groups(groups)
+
+    return jsonify({"message": f"Debts for group '{group_name}' simplified successfully."}), 200
 
 
 @app.route("/", methods=["GET"])
