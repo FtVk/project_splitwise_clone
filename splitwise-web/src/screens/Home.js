@@ -34,8 +34,10 @@ const Home = () => {
   const [toUser, setToUser] = useState("");
   const [newMember, setNewMember] = useState("");
   const [category, setCategory] = useState("");
+  const [explanation, setExplanation] = useState("");
   const [amount, setAmount] = useState("");
   const [currency, setCurrency] = useState("USD"); // Currency state
+  const [searchPhrase, setSearchPhrase] = useState("");
 
   useEffect(() => {
     const loadGroups = async () => {
@@ -94,6 +96,7 @@ const Home = () => {
       to_user: toUser,
       amount: parseFloat(convertedAmount),
       category,
+      explanation
     };
   
     await api.addTransaction(selectedGroup, transactionData);
@@ -110,6 +113,7 @@ const Home = () => {
     // Clear fields
     setFromUser("");
     setToUser("");
+    setExplanation("");
     setCategory("");
     setAmount("");
     setCurrency("USD"); // Reset currency to default
@@ -123,6 +127,17 @@ const Home = () => {
 
     alert("Debts simplified successfully!");
   };
+
+  const handleSearchChange = (event) => {
+    setSearchPhrase(event.target.value);
+  };
+
+  const handleSearch = async () => {
+    const filteredTransactions = await api.searchTransactions(searchPhrase);
+    setTransactions(filteredTransactions);
+  };
+
+
 
   return (
     <Container className="container">
@@ -167,8 +182,8 @@ const Home = () => {
                 <FormControl fullWidth margin="normal">
                   <InputLabel>Select From User</InputLabel>
                   <Select
-                    value={fromUser}
-                    onChange={(e) => setFromUser(e.target.value)}
+                    value={fromUser }
+                    onChange={(e) => setFromUser (e.target.value)}
                   >
                     {members.map((member) => (
                       <MenuItem key={member} value={member}>
@@ -181,8 +196,8 @@ const Home = () => {
                 <FormControl fullWidth margin="normal">
                   <InputLabel>Select To User</InputLabel>
                   <Select
-                    value={toUser}
-                    onChange={(e) => setToUser(e.target.value)}
+                    value={toUser }
+                    onChange={(e) => setToUser (e.target.value)}
                   >
                     {members.map((member) => (
                       <MenuItem key={member} value={member}>
@@ -208,6 +223,13 @@ const Home = () => {
                     label="Category"
                     value={category}
                     onChange={(e) => setCategory(e.target.value)}
+                    fullWidth
+                    margin="normal"
+                  />
+                  <TextField
+                    label="Explanation" 
+                    value={explanation}
+                    onChange={(e) => setExplanation(e.target.value.toLowerCase())}
                     fullWidth
                     margin="normal"
                   />
@@ -272,6 +294,19 @@ const Home = () => {
                 </ListItem>
               ))}
             </List>
+
+            {/* Search Input and Button */}
+            <TextField
+              label="Search by Category or Explanation"
+              variant="outlined"
+              value={searchPhrase}
+              onChange={handleSearchChange}
+              fullWidth
+              margin="normal"
+            />
+            <Button variant="contained" color="primary" onClick={handleSearch}>
+              Search
+            </Button>
           </Paper>
         </Grid>
       </Grid>
