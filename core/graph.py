@@ -1,4 +1,3 @@
-import json
 from collections import defaultdict
 from datetime import datetime
 from core.balance_calculation import BalanceGraph
@@ -10,7 +9,7 @@ class ExpenseGraph:
         self.graph = defaultdict(list)  # Stores detailed transactions
         self.balance_graph = BalanceGraph()    # Underlying balance graph
 
-    def add_transaction(self, from_user, to_user, amount, category, timestamp=None):
+    def add_transaction(self, from_user, to_user, amount, category, timestamp=None, explanation=None):
         """Add a transaction between users and update the balance graph."""
         if amount <= 0:
             raise ValueError("Amount must be positive.")
@@ -22,7 +21,8 @@ class ExpenseGraph:
             "to": to_user,
             "amount": amount,
             "category": category,
-            "timestamp": timestamp
+            "timestamp": timestamp,
+            "explanation": explanation
         }
         
         # Add the transaction to the history
@@ -30,6 +30,16 @@ class ExpenseGraph:
 
         # Update the balance graph
         self.balance_graph.add_edge(from_user, to_user, amount)
+        
+    def fetch_recent_transactions(self):
+        # Assuming selected_group is a list of users in the group
+        all_transactions = self.get_all_transactions()
+
+        # Sort transactions by timestamp in descending order
+        all_transactions.sort(key=lambda x: x["timestamp"], reverse=True)
+
+        # Return the last three transactions
+        return all_transactions[:3]
 
     def visualize_transactions(self):
         """Visualize the detailed transactions."""
@@ -48,19 +58,12 @@ class ExpenseGraph:
         if user not in self.graph:
             raise ValueError(f"User {user} does not exist.")
         return self.graph[user]
-
-    def save_graph(self, file_path="data/graph.json"):
-        """Save the graph to a file."""
-        with open(file_path, "w") as file:
-            json.dump(self.graph, file, indent=4)
-
-    def load_graph(self, file_path="data/graph.json"):
-        """Load the graph from a file."""
-        try:
-            with open(file_path, "r") as file:
-                self.graph = json.load(file)
-        except FileNotFoundError:
-            self.graph = {}
-
-            for neighbor, amount in edges.items():
-                print(f"{user} owes {neighbor}: {amount}")
+    
+    def get_all_transactions(self):
+        transactions = []
+        for key, value in self.graph.items():
+            for expense in value:
+                transaction = expense
+                transaction['from'] = key
+                transactions.append(transaction)
+        return transactions
