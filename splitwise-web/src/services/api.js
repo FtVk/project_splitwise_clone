@@ -28,6 +28,9 @@ const api = {
 
   addTransaction: (groupName, transactionData) =>
     axios.post(`${API_BASE_URL}/groups/${groupName}/transactions`, transactionData).then((res) => res.data),
+
+  fetchRecentTransactions: (groupName) =>
+    axios.get(`${API_BASE_URL}/groups/${groupName}/transactions/recent`).then((res) => res.data.transactions),
 };
 
 export default api;
