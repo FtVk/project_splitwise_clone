@@ -13,7 +13,12 @@ const api = {
 
   fetchGroupMembers: (groupName) =>
     axios.get(`${API_BASE_URL}/groups/${groupName}/members`).then((res) => res.data.members),
-
+  
+  fetchGroupTransactions: (groupName) =>
+    axios
+      .get(`${API_BASE_URL}/groups/${groupName}/transactions`)
+      .then((res) => res.data.transactions),
+  
   addMemberToGroup: (groupName, memberName) =>
     axios.post(`${API_BASE_URL}/groups/${groupName}/members`, { name: memberName }).then((res) => res.data),
 
