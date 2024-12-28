@@ -136,6 +136,29 @@ def add_member_to_group(group_name):
     save_groups(groups)
     return jsonify({"message": f"Member '{member_name}' added to group '{group_name}'."}), 201
 
+@app.route("/groups/<group_name>/transactions", methods=["GET"])
+def fetch_group_transactions(group_name):
+    """Fetch all transactions for a specific group."""
+    group = groups.get(group_name)
+    if not group:
+        return jsonify({"error": f"Group '{group_name}' not found."}), 404
+
+    transactions = [
+        {
+            "from_user": from_user,
+            "to_user": transaction["to"],
+            "amount": transaction["amount"],
+            "category": transaction["category"],
+            "timestamp": transaction["timestamp"],
+        }
+        for from_user, transactions in group.graph.graph.items()
+        for transaction in transactions
+    ]
+
+    return jsonify({"transactions": transactions}), 200
+
+
+
 @app.route("/groups/<group_name>/transactions", methods=["POST"])
 def add_transaction(group_name):
     """Add a transaction to a group's expense graph and update the balance graph."""
