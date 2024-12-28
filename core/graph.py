@@ -10,7 +10,7 @@ class ExpenseGraph:
         self.graph = defaultdict(list)  # Stores detailed transactions
         self.balance_graph = BalanceGraph()    # Underlying balance graph
 
-    def add_transaction(self, from_user, to_user, amount, category, timestamp=None):
+    def add_transaction(self, from_user, to_user, amount, category, timestamp=None, explanation=None):
         """Add a transaction between users and update the balance graph."""
         if amount <= 0:
             raise ValueError("Amount must be positive.")
@@ -22,7 +22,8 @@ class ExpenseGraph:
             "to": to_user,
             "amount": amount,
             "category": category,
-            "timestamp": timestamp
+            "timestamp": timestamp,
+            "explanation": explanation
         }
         
         # Add the transaction to the history
@@ -30,6 +31,20 @@ class ExpenseGraph:
 
         # Update the balance graph
         self.balance_graph.add_edge(from_user, to_user, amount)
+        
+    def fetch_recent_transactions(self, selected_group):
+        # Assuming selected_group is a list of users in the group
+        all_transactions = []
+
+        for user in selected_group:
+            if user in self.graph:
+                all_transactions.extend(self.graph[user])
+
+        # Sort transactions by timestamp in descending order
+        all_transactions.sort(key=lambda x: x["timestamp"], reverse=True)
+
+        # Return the last three transactions
+        return all_transactions[:3]
 
     def visualize_transactions(self):
         """Visualize the detailed transactions."""
