@@ -27,6 +27,7 @@ const Home = () => {
   const [groups, setGroups] = useState([]);
   const [selectedGroup, setSelectedGroup] = useState("");
   const [balanceData, setBalanceData] = useState({});
+  const [reTransactions, setReTransactions] = useState([]);
   const [transactions, setTransactions] = useState([]);
   const [newGroupName, setNewGroupName] = useState("");
   const [members, setMembers] = useState([]);
@@ -34,8 +35,10 @@ const Home = () => {
   const [toUser, setToUser] = useState("");
   const [newMember, setNewMember] = useState("");
   const [category, setCategory] = useState("");
+  const [explanation, setExplanation] = useState("");
   const [amount, setAmount] = useState("");
   const [currency, setCurrency] = useState("USD"); // Currency state
+  const [searchPhrase, setSearchPhrase] = useState("");
 
   useEffect(() => {
     const loadGroups = async () => {
@@ -54,7 +57,7 @@ const Home = () => {
     const recentTransactions = await api.fetchRecentTransactions(group);
 
     setBalanceData(balance);
-    setTransactions(recentTransactions);
+    setReTransactions(recentTransactions);
   };
 
   const handleAddGroup = async () => {
@@ -94,6 +97,7 @@ const Home = () => {
       to_user: toUser,
       amount: parseFloat(convertedAmount),
       category,
+      explanation
     };
   
     await api.addTransaction(selectedGroup, transactionData);
@@ -103,13 +107,14 @@ const Home = () => {
     const recentTransactions = await api.fetchRecentTransactions(selectedGroup);
   
     setBalanceData(balance);
-    setTransactions(recentTransactions);
+    setReTransactions(recentTransactions);
   
     alert("Transaction added successfully!");
   
     // Clear fields
     setFromUser("");
     setToUser("");
+    setExplanation("");
     setCategory("");
     setAmount("");
     setCurrency("USD"); // Reset currency to default
@@ -124,11 +129,18 @@ const Home = () => {
     alert("Debts simplified successfully!");
   };
 
+
+  const handleSearch = async () => {
+    const filteredTransactions = await api.searchTransactions(selectedGroup, searchPhrase);
+    setTransactions(filteredTransactions);
+};
+
+
   return (
     <Container className="container">
       <Grid container spacing={4}>
         {/* Left Panel */}
-        <Grid item xs={8}>
+        <Grid item xs={12} md={8}>
           <Box mt={4}>
             <Typography variant="h4" gutterBottom>
               Expense Manager
@@ -199,7 +211,11 @@ const Home = () => {
                   fullWidth
                   margin="normal"
                 />
-                <Button variant="contained" color="secondary" onClick={handleAddMember}>
+                <Button
+                  variant="contained"
+                  color="secondary"
+                  onClick={handleAddMember}
+                >
                   Add Member
                 </Button>
 
@@ -208,6 +224,13 @@ const Home = () => {
                     label="Category"
                     value={category}
                     onChange={(e) => setCategory(e.target.value)}
+                    fullWidth
+                    margin="normal"
+                  />
+                  <TextField
+                    label="Explanation"
+                    value={explanation}
+                    onChange={(e) => setExplanation(e.target.value.toLowerCase())}
                     fullWidth
                     margin="normal"
                   />
@@ -257,26 +280,94 @@ const Home = () => {
           </Box>
         </Grid>
 
-        <Grid item xs={4}>
-          <Paper elevation={3} style={{ padding: "16px" }}>
+        {/* Right Panel for Recent Transactions */}
+        <Grid item xs={12} md={4}>
+          <Paper
+            elevation={3}
+            style={{ padding: "16px", maxHeight: "400px", overflowY: "auto" }}
+          >
             <Typography variant="h6" gutterBottom>
               Recent Transactions
             </Typography>
             <List>
-              {transactions.slice(0, 10).map((transaction, index) => (
-                <ListItem key={index}>
-                  <ListItemText
-                    primary={`From ${transaction.from_user} to ${transaction.to_user}`}
-                    secondary={`Amount: ${transaction.amount}, Time: ${transaction.timestamp}`}
-                  />
+              {reTransactions.length > 0 ? (
+                reTransactions.slice(0, 10).map((reTransactions, index) => (
+                  <ListItem key={index}>
+                    <ListItemText
+                      primary={`From: ${reTransactions.from} to: ${reTransactions.to}`}
+                      secondary={
+                        <>
+                          <span>Amount: ${reTransactions.amount.toFixed(2)}</span>
+                          <br />
+                          <span>Time: {new Date(reTransactions.timestamp).toLocaleString()}</span>
+                          <br />
+                          <span>Category: {reTransactions.category}</span>
+                          <br />
+                          <span>
+                            Explanation: {reTransactions.explanation ? reTransactions.explanation : "No Explanation"}
+                          </span>
+                        </>
+                      }
+                    />
+                  </ListItem>
+                ))
+              ) : (
+                <ListItem>
+                  <ListItemText primary="No recent transactions found." />
                 </ListItem>
-              ))}
+              )}
             </List>
+
+            <TextField
+              label="Search by Category or Explanation"
+              variant="outlined"
+              value={searchPhrase}
+              onChange={(e) => setSearchPhrase(e.target.value)}
+              fullWidth
+              margin="normal"
+            />
+            <Button variant="contained" color="primary" onClick={handleSearch}>
+              Search
+            </Button>
+
+            <Box mt={2}>
+              <Typography variant="h6" gutterBottom>
+                Results of Search
+              </Typography>
+              <List>
+                {transactions.length > 0 ? (
+                  transactions.slice(0, 10).map((transaction, index) => (
+                    <ListItem key={index}>
+                      <ListItemText
+                        primary={`From: ${transaction.from} to: ${transaction.to}`}
+                        secondary={
+                          <>
+                            <span>Amount: ${transaction.amount.toFixed(2)}</span>
+                            <br />
+                            <span>Time: {new Date(transaction.timestamp).toLocaleString()}</span>
+                            <br />
+                            <span>Category: {transaction.category}</span>
+                            <br />
+                            <span>
+                              Explanation: {transaction.explanation ? transaction.explanation : "No Explanation"}
+                            </span>
+                          </>
+                        }
+                      />
+                    </ListItem>
+                  ))
+                ) : (
+                  <ListItem>
+                    <ListItemText primary="No search results found." />
+                  </ListItem>
+                )}
+              </List>
+            </Box>
           </Paper>
         </Grid>
       </Grid>
     </Container>
   );
-};
+}
 
 export default Home;
