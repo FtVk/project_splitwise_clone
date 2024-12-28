@@ -28,7 +28,7 @@ def load_groups():
                 # Load transaction edges into the graph
                 for edge in data["edges"]:
                     groups[name].graph.add_transaction(
-                        edge["from"], edge["to"], edge["amount"], edge["category"], edge["timestamp"]
+                        edge["from"], edge["to"], edge["amount"], edge["category"], edge["timestamp"], edge["explanation"]
                     )
 
                 # Load balance graph
@@ -49,7 +49,7 @@ def save_groups(groups):
                 "nodes": list(set(member.name for member in group.members)),
                 "edges": [
                     {"from": from_user, "to": transaction["to"], "amount": transaction["amount"],
-                     "category": transaction["category"], "timestamp": transaction["timestamp"]}
+                     "category": transaction["category"], "timestamp": transaction["timestamp"], "explanation": transaction["explanation"]}
                     for from_user, transactions in group.graph.graph.items()
                     for transaction in transactions
                 ],
@@ -156,9 +156,6 @@ def fetch_group_transactions(group_name):
     ]
 
     return jsonify({"transactions": transactions}), 200
-
-
-
 @app.route("/groups/<group_name>/transactions", methods=["POST"])
 def add_transaction(group_name):
     """Add a transaction to a group's expense graph and update the balance graph."""
@@ -172,12 +169,13 @@ def add_transaction(group_name):
     amount = data.get("amount")
     category = data.get("category")
     timestamp = data.get("timestamp")
+    explanation = data.get("explanation")
 
     if not all([from_user, to_user, amount, category]):
         return jsonify({"error": "Missing transaction details"}), 400
 
     try:
-        group.graph.add_transaction(from_user, to_user, amount, category, timestamp)
+        group.graph.add_transaction(from_user, to_user, amount, category, timestamp, explanation)
         save_groups(groups)
         return jsonify({"message": "Transaction added successfully."}), 200
     except ValueError as e:
@@ -200,6 +198,35 @@ def simplify_debts(group_name):
 @app.route("/", methods=["GET"])
 def home():
     return jsonify({"message": "Welcome to the Splitwise Clone API"}), 200
+
+@app.route("/groups/<group_name>/transactions/recent", methods=["GET"])
+def fetch_recent_transactions(group_name):
+    """Fetch the last three transactions for a specific group."""
+    group = groups.get(group_name)
+    if not group:
+        return jsonify({"error": f"Group '{group_name}' not found."}), 404
+
+    recent_transactions = group.graph.fetch_recent_transactions()
+    return jsonify({"transactions": recent_transactions}), 200
+
+@app.route('/search_transactions', methods=['GET'])
+def search_transactions():
+    group_name = request.args.get('group_name')  # Get the group name from the query parameters
+    search_phrase = request.args.get('phrase', '')  # Get the search phrase from the query parameters
+
+    # Assuming you have a way to access the group by name
+    group = groups.get(group_name)  # 'groups' should be a dictionary of loaded groups
+    if not group:
+        return jsonify({"error": "Group not found"}), 404
+
+    transactions = group.graph.get_all_transactions()  # Get all transactions from the group's graph
+    filtered_transactions = [
+        transaction for transaction in transactions
+        if search_phrase.lower() in transaction['category'].lower() or
+           search_phrase.lower() in transaction['explanation'].lower()
+    ]
+
+    return jsonify(filtered_transactions), 200  
 
 
 if __name__ == "__main__":
