@@ -1,8 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { fetchUsers } from "../services/api";
-//import { TextField, Button, Typography, Container, Alert, Dialog, DialogActions, DialogContent, DialogTitle } from "@mui/material";
-import Autocomplete from "@mui/material/Autocomplete";
-
 import api from "../services/api";
 import {
   Container,
@@ -20,7 +16,6 @@ import {
   ListItem,
   ListItemText,
 } from "@mui/material";
-
 import { convertCurrency } from "../services/currency_conversion";
 
 const Home = () => {
@@ -79,9 +74,9 @@ const Home = () => {
       alert("Please fill out all fields.");
       return;
     }
-  
+
     let convertedAmount = parseFloat(amount);
-  
+
     // Check and convert currency to USD
     if (currency !== "USD") {
       try {
@@ -91,26 +86,26 @@ const Home = () => {
         return;
       }
     }
-  
+
     const transactionData = {
       from_user: fromUser,
       to_user: toUser,
       amount: parseFloat(convertedAmount),
       category,
-      explanation
+      explanation,
     };
-  
+
     await api.addTransaction(selectedGroup, transactionData);
-  
+
     // Fetch updated data
     const balance = await api.fetchBalanceData(selectedGroup);
     const recentTransactions = await api.fetchRecentTransactions(selectedGroup);
-  
+
     setBalanceData(balance);
     setReTransactions(recentTransactions);
-  
+
     alert("Transaction added successfully!");
-  
+
     // Clear fields
     setFromUser("");
     setToUser("");
@@ -129,12 +124,31 @@ const Home = () => {
     alert("Debts simplified successfully!");
   };
 
-
   const handleSearch = async () => {
     const filteredTransactions = await api.searchTransactions(selectedGroup, searchPhrase);
     setTransactions(filteredTransactions);
-};
+  };
 
+  const handleDeleteTransaction = async (transactionId) => {
+    if (!selectedGroup || !transactionId) return;
+
+    const confirmDelete = window.confirm("Are you sure you want to delete this transaction?");
+    if (!confirmDelete) return;
+
+    try {
+      await api.deleteTransaction(selectedGroup, transactionId);
+      alert("Transaction deleted successfully!");
+
+      // Refresh data
+      const balance = await api.fetchBalanceData(selectedGroup);
+      const recentTransactions = await api.fetchRecentTransactions(selectedGroup);
+
+      setBalanceData(balance);
+      setReTransactions(recentTransactions);
+    } catch (error) {
+      alert("Failed to delete transaction: " + error.message);
+    }
+  };
 
   return (
     <Container className="container">
@@ -309,6 +323,14 @@ const Home = () => {
                         </>
                       }
                     />
+                    <Button
+                      variant="contained"
+                      color="secondary"
+                      onClick={() => handleDeleteTransaction(reTransactions.transaction_id)}
+                      style={{ marginLeft: "10px" }}
+                    >
+                      Delete
+                    </Button>
                   </ListItem>
                 ))
               ) : (
@@ -354,6 +376,14 @@ const Home = () => {
                           </>
                         }
                       />
+                      <Button
+                        variant="contained"
+                        color="secondary"
+                        onClick={() => handleDeleteTransaction(transaction.id)}
+                        style={{ marginLeft: "10px" }}
+                      >
+                        Delete
+                      </Button>
                     </ListItem>
                   ))
                 ) : (
@@ -368,6 +398,6 @@ const Home = () => {
       </Grid>
     </Container>
   );
-}
+};
 
 export default Home;
