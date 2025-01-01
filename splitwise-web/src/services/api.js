@@ -1,8 +1,6 @@
 import axios from "axios";
 
-
 const API_BASE_URL = "http://127.0.0.1:5000"; // Base URL for your backend
-
 
 const api = {
   fetchGroups: () =>
@@ -15,9 +13,7 @@ const api = {
     axios.get(`${API_BASE_URL}/groups/${groupName}/members`).then((res) => res.data.members),
 
   fetchGroupTransactions: (groupName) =>
-    axios
-      .get(`${API_BASE_URL}/groups/${groupName}/transactions`)
-      .then((res) => res.data.transactions),
+    axios.get(`${API_BASE_URL}/groups/${groupName}/transactions`).then((res) => res.data.transactions),
       
   addMemberToGroup: (groupName, memberName) =>
     axios.post(`${API_BASE_URL}/groups/${groupName}/members`, { name: memberName }).then((res) => res.data),
@@ -37,10 +33,12 @@ const api = {
   fetchRecentTransactions: (groupName) =>
     axios.get(`${API_BASE_URL}/groups/${groupName}/transactions/recent`).then((res) => res.data.transactions),
 
-  searchTransactions: (groupName, searchPhrase) => 
+  searchTransactions: (groupName, searchPhrase) =>
     axios.get(`${API_BASE_URL}/search_transactions`, {
-        params: { group_name: groupName, phrase: searchPhrase }
-    }).then((res) => res.data)
-};
+      params: { group_name: groupName, phrase: searchPhrase }
+    }).then((res) => res.data),
 
+  deleteTransaction: (groupName, transactionId) =>
+    axios.delete(`${API_BASE_URL}/groups/${groupName}/transactions/${transactionId}`).then((res) => res.data),
+};
 export default api;
