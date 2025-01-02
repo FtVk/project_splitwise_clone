@@ -18,7 +18,7 @@ const api = {
     axios
       .get(`${API_BASE_URL}/groups/${groupName}/transactions`)
       .then((res) => res.data.transactions),
-      
+
   addMemberToGroup: (groupName, memberName) =>
     axios.post(`${API_BASE_URL}/groups/${groupName}/members`, { name: memberName }).then((res) => res.data),
 
@@ -40,7 +40,35 @@ const api = {
   searchTransactions: (groupName, searchPhrase) => 
     axios.get(`${API_BASE_URL}/search_transactions`, {
         params: { group_name: groupName, phrase: searchPhrase }
-    }).then((res) => res.data)
+    }).then((res) => res.data),
+
+  addSplitbill: (groupName, grTransactionData) =>
+    axios.post(`${API_BASE_URL}/groups/${groupName}/group_transactions`, {
+      from_user: grTransactionData.payer,
+      to_users: grTransactionData.consumers,
+      amounts: grTransactionData.amounts,
+      split_method: grTransactionData.splitMethod,
+      total_amount: grTransactionData.totalAmount,
+      category: grTransactionData.category,
+      timestamp: grTransactionData.timestamp,
+      explanation: grTransactionData.explanation,
+    }).then((res) => res.data),
+
+  extractFoods: (formData) =>
+    axios
+      .post(`${API_BASE_URL}/scan-receipt`, formData)
+      .then((res) => res.data),
+
+  scanPayment: (formData) =>
+    axios
+      .post(`${API_BASE_URL}/scan-payment`, formData)
+      .then((res) => res.data),
+
+  submitFoodAssignments: (assignments) =>
+    axios
+      .post(`${API_BASE_URL}/assignments`, assignments)
+      .then((res) => res.data),
+
 };
 
 export default api;
