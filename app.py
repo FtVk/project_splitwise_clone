@@ -3,14 +3,29 @@ from core.graph import ExpenseGraph  # Use your graph
 from core.debt_simplification import DebtSimplification
 from core.balance_calculation import BalanceGraph
 from core.debt_simplification import DebtSimplification
+import utils.receipt_scanner as scanner
 from flask_cors import CORS
 from models.group import Group
 from models.user import User
 import os
 import json
+from werkzeug.utils import secure_filename
+from PIL import Image
 
 app = Flask(__name__)
 CORS(app)
+
+# Configure upload folder and allowed file types
+UPLOAD_FOLDER = './uploads'
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
+
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+
+# Ensure the upload folder exists
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 # Initialize the graph and load stored users
 expense_graph = ExpenseGraph()
@@ -228,6 +243,123 @@ def search_transactions():
 
     return jsonify(filtered_transactions), 200  
 
+@app.route("/groups/<group_name>/group_transactions", methods=["POST"])
+def add_splitbill(group_name):
+    """Add a transaction to a group's expense graph and update the balance graph."""
+    group = groups.get(group_name)
+    if not group:
+        return jsonify({"error": f"Group '{group_name}' not found."}), 404
+
+    data = request.json
+    from_user = data.get("from_user")  # Payer
+    to_users = data.get("to_users")  # List of people who consumed
+    amounts = data.get("amounts")  # Amounts owed by each consumer
+    split_method = data.get("split_method")  # Method of split
+    total_amount = data.get("total_amount")  # Total amount for ratio/percentage
+    category = data.get("category")
+    timestamp = data.get("timestamp")
+    explanation = data.get("explanation")
+
+    if not all([from_user, to_users, amounts, category, split_method]):
+        print(amounts)
+        print(from_user, to_users, amounts, category, split_method)
+        return jsonify({"error": "Missing transaction details"}), 410
+
+    if len(to_users) != len(amounts):
+        print(to_users, amounts)
+        return jsonify({"error": "Mismatch between to_users and amounts"}), 403
+
+    try:
+        if split_method in ["ratio", "percentage"]:
+            if total_amount is None:
+                return jsonify({"error": "Total amount is required for ratio or percentage splits."}), 402
+
+            if from_user in to_users:
+                payer_index = to_users.index(from_user)
+                amounts.pop(payer_index)
+                to_users.pop(payer_index)
+                
+            # Calculate total amounts 
+            calculated_total = sum(amounts) 
+
+            # Add transactions for each user
+            for to_user, amount in zip(to_users, amounts):
+                group.graph.add_transaction(from_user, to_user, total_amount * amount / calculated_total , category, timestamp, explanation)
+                
+        else:
+            for to_user, amount in zip(to_users, amounts):
+                if to_user != from_user:
+                    group.graph.add_transaction(from_user, to_user, amount, category, timestamp, explanation)
+
+        save_groups(groups)
+        return jsonify({"message": "Transaction added successfully."}), 200
+    except ValueError as e:
+        return jsonify({"error": str(e)}), 401
+    
+    
+UPLOAD_FOLDER = 'uploads'
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+
+@app.route('/scan-receipt', methods=['POST'])
+def scan_receipt():
+    image = request.files.get('photo')
+
+    if image and not allowed_file(image.filename):
+        return jsonify({'error': 'File type not allowed'}), 500
+
+    try:
+        # Save the image for debugging purposes
+        file_path = os.path.join(UPLOAD_FOLDER, image.filename)
+        image.save(file_path)
+
+        # Perform OCR using pytesseract
+        receipt_details = scanner.process_expense_receipt(file_path)
+
+        if not receipt_details or 'items' not in receipt_details or not receipt_details['items']:
+            return jsonify({'error': 'Could not extract the desired data from the photo'}), 502
+
+        quantities = [item['quantity'] for item in receipt_details['items']]
+        names = [item['name'] for item in receipt_details['items']]
+        foods = []
+        for i, food in enumerate(names):
+            for j in range(int(quantities[i])):
+                foods.append(f'{food} number {j+1}')
+            
+        return jsonify({'foods': foods, 'receiptDetails': receipt_details})
+    
+    except Exception as e:
+        print(f"Error processing receipt: {e}")
+        return jsonify({'error': 'Failed to process receipt'}), 501
+
+    
+
+@app.route('/scan-payment', methods=['POST'])
+def scan_payment():
+    image = request.files.get('photo')
+    name = request.form.get('name')  # Adjusted to match formData input
+
+    if not image or not allowed_file(image.filename):
+        return jsonify({'error': 'File type not allowed'}), 400
+
+    try:
+        # Save the image for debugging purposes
+        file_path = os.path.join(UPLOAD_FOLDER, secure_filename(image.filename))
+        image.save(file_path)
+
+        # Perform OCR using scanner logic
+        amount, name_found = scanner.process_payment_receipt(file_path, name)
+
+        if amount is None:  # Check if amount extraction failed
+            return jsonify({'error': 'Amount could not be extracted from the photo.'}), 422
+
+        return jsonify({'amount': amount, 'name_found': name_found})
+
+    except Exception as e:
+        print(f"Error processing receipt: {e}")
+        return jsonify({'error': 'Failed to process receipt'}), 500
+
+
+        
 
 if __name__ == "__main__":
     app.run(debug=True)
