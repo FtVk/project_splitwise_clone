@@ -129,11 +129,24 @@ const Home = () => {
     alert("Debts simplified successfully!");
   };
 
-
   const handleSearch = async () => {
     const filteredTransactions = await api.searchTransactions(selectedGroup, searchPhrase);
     setTransactions(filteredTransactions);
-};
+  };
+
+  const handleAmountChange = (value) => {
+    // Convert the value to a number
+    const numericValue = Number(value);
+  
+    // Check if the value is a valid number and greater than or equal to 0
+    if (!isNaN(numericValue) && numericValue >= 0) {
+      // Update the state or perform the necessary action
+      setAmount(numericValue);
+    } else {
+      // Optionally, you can handle invalid input here (e.g., show an error message)
+      console.log("Invalid input. Please enter a positive number.");
+    }
+  };
 
 
   return (
@@ -238,7 +251,8 @@ const Home = () => {
                     label="Amount"
                     type="number"
                     value={amount}
-                    onChange={(e) => setAmount(e.target.value)}
+                    onChange={(e) => handleAmountChange(e.target.value)}
+                    inputProps={{ min: 0 }} // Prevent negative numbers
                     fullWidth
                     margin="normal"
                   />
