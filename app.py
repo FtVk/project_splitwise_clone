@@ -187,6 +187,7 @@ def add_transaction(group_name):
     explanation = data.get("explanation")
 
     if not all([from_user, to_user, amount, category]):
+        print([from_user, to_user, amount, category])
         return jsonify({"error": "Missing transaction details"}), 400
 
     try:
@@ -261,8 +262,6 @@ def add_splitbill(group_name):
     explanation = data.get("explanation")
 
     if not all([from_user, to_users, amounts, category, split_method]):
-        print(amounts)
-        print(from_user, to_users, amounts, category, split_method)
         return jsonify({"error": "Missing transaction details"}), 410
 
     if len(to_users) != len(amounts):
@@ -276,11 +275,11 @@ def add_splitbill(group_name):
 
             if from_user in to_users:
                 payer_index = to_users.index(from_user)
-                amounts.pop(payer_index)
+                amount_to_delete = amounts.pop(payer_index)
                 to_users.pop(payer_index)
                 
             # Calculate total amounts 
-            calculated_total = sum(amounts) 
+            calculated_total = sum(amounts) + amount_to_delete
 
             # Add transactions for each user
             for to_user, amount in zip(to_users, amounts):
@@ -302,6 +301,7 @@ os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
 @app.route('/scan-receipt', methods=['POST'])
 def scan_receipt():
+    print("function hit")
     image = request.files.get('photo')
 
     if image and not allowed_file(image.filename):
