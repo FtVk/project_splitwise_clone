@@ -292,8 +292,8 @@ const Home = () => {
                         const { from, to, amount } = edge; // Destructure each edge object
                         return (
                           <li key={index}>
-                            <span style={{ color: "#00A36C" }}>{from}</span> owes{" "}
-                            <span style={{ color: "#C41E3A" }}>{to}</span> an amount of{" "}
+                            <span style={{ color: "#00A36C" }}>{to}</span> owes{" "}
+                            <span style={{ color: "#C41E3A" }}>{from}</span> an amount of{" "}
                             <strong>{Number(amount).toFixed(2)}</strong>
                           </li>
                         );
