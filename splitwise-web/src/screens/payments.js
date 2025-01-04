@@ -30,6 +30,7 @@ const PaymentsPage = () => {
   const [snackbar, setSnackbar] = useState({ open: false, message: "", severity: "success" });
   const [foundUser, setFoundUser] = useState("");
   const [selectedFile, setSelectedFile] = useState(null);
+  const [paymentMethod, setPaymentMethod] = useState("");
 
   useEffect(() => {
     api.fetchGroups().then(setGroups).catch(console.error);
@@ -105,6 +106,20 @@ const PaymentsPage = () => {
       setFoundUser("");
     } catch (error) {
       alert("Failed to add payment. Please try again.");
+    }
+  };
+  
+  const handlePaymentMethod = () => {
+    if (!paymentMethod) {
+      alert("Please select a payment method.");
+      return;
+    }
+
+    if (paymentMethod === "cash") {
+      handleScan();
+    } else if (paymentMethod === "online") {
+      const paymentUrl = "https://panel.zibal.ir/register";
+      window.location.href = paymentUrl;
     }
   };
 
@@ -242,7 +257,7 @@ const PaymentsPage = () => {
     } else {
       alert("Camera not supported in this browser");
     }
-  };  
+  };
   
 
   const handleScan = async () => {
@@ -469,8 +484,27 @@ const PaymentsPage = () => {
           {/* Receipt Scanning Section */}
           <Box mt={4} id="camera-root">
             <Typography variant="h5" sx={{ fontWeight: "bold", marginBottom: 2 }}>
-              Scan Receipt
+              Choose Payment Method
             </Typography>
+
+            {/* Payment Method Dropdown */}
+            <FormControl fullWidth margin="normal">
+              <InputLabel>Payment Method</InputLabel>
+              <Select
+                value={paymentMethod}
+                onChange={(e) => setPaymentMethod(e.target.value)}
+              >
+                <MenuItem value="cash">Cash/Bank Counter</MenuItem>
+                <MenuItem value="online">Online Payment</MenuItem>
+              </Select>
+            </FormControl>
+
+            {/* Conditional Section for Cash/Bank Counter */}
+            {paymentMethod === "cash" && (
+              <>
+                <Typography variant="body1" sx={{ marginTop: 2 }}>
+                  Upload a receipt photo or use the scanner to proceed with cash/bank counter payment.
+                </Typography>
             <input
               accept="image/*"
               type="file"
@@ -494,10 +528,22 @@ const PaymentsPage = () => {
             >
               Scan 
             </Button>
+              </>
+            )}
+
+            {/* Proceed Button */}
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={handlePaymentMethod}
+              sx={{ marginLeft: 2 }}
+            >
+              Proceed to Payment
+            </Button>
           </Box>
         </Box>
       )}
-  
+
       {/* Snackbar */}
       <Snackbar
         open={snackbar.open}
@@ -510,7 +556,7 @@ const PaymentsPage = () => {
       </Snackbar>
     </Box>
   );
-};  
+};
 
 
 export default PaymentsPage;
