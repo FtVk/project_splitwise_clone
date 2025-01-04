@@ -456,8 +456,8 @@ const PaymentsPage = () => {
                 }}
               >
                 {foundUser
-                  ? `${toUser} has been found in the receipt!`
-                  : `${toUser} has not been found in the receipt.`}
+                  ? `The name ${toUser} has been found in the receipt!`
+                  : `The name ${toUser} has not been found in the receipt.`}
               </Typography>
             )}
 
