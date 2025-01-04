@@ -3,10 +3,12 @@ from core.graph import ExpenseGraph  # Use your graph
 from core.debt_simplification import DebtSimplification
 from core.balance_calculation import BalanceGraph
 from core.debt_simplification import DebtSimplification
-import utils.receipt_scanner as scanner
 from flask_cors import CORS
 from models.group import Group
 from models.user import User
+import utils.receipt_scanner as scanner
+from datetime import datetime, timedelta
+from dateutil import parser  # Install with `pip install python-dateutil`
 import os
 import json
 from werkzeug.utils import secure_filename
@@ -18,12 +20,9 @@ CORS(app)
 # Configure upload folder and allowed file types
 UPLOAD_FOLDER = './uploads'
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
-
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-
 # Ensure the upload folder exists
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
-
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
@@ -88,6 +87,48 @@ def save_groups(groups):
 
 # Initialize groups
 groups = load_groups()
+
+
+
+def handle_recurring_transaction(transaction, recurrence_interval):
+    """
+    Handle recurring transactions by generating future transactions.
+
+    Args:
+        transaction (dict): The original transaction details.
+        recurrence_interval (str): Recurrence type ('monthly', 'yearly').
+
+    Returns:
+        list: A list of future transaction entries.
+    """
+    if recurrence_interval not in ["monthly", "yearly"]:
+        return []
+
+    # Define the number of recurrences and interval
+    num_recurrences = 12 if recurrence_interval == "monthly" else 5
+    interval = timedelta(days=30) if recurrence_interval == "monthly" else timedelta(days=365)
+
+    # Generate future transactions
+    future_transactions = []
+    base_date = parser.isoparse(transaction["timestamp"])
+
+    for i in range(1, num_recurrences + 1):
+        future_date = base_date + (interval * i)
+        future_transaction = {
+            "amount": transaction["amount"],
+            "explanation": transaction["explanation"],
+            "timestamp": future_date.isoformat(),
+            "from_user": transaction["from_user"],
+            "to_user": transaction["to_user"],
+            "category": transaction["category"],
+            "is_recurring": True,
+        }
+        
+        future_transactions.append(future_transaction)
+
+    return future_transactions
+
+
 
 @app.route("/groups", methods=["GET"])
 def fetch_groups():
@@ -171,6 +212,7 @@ def fetch_group_transactions(group_name):
     ]
 
     return jsonify({"transactions": transactions}), 200
+
 @app.route("/groups/<group_name>/transactions", methods=["POST"])
 def add_transaction(group_name):
     """Add a transaction to a group's expense graph and update the balance graph."""
@@ -185,17 +227,63 @@ def add_transaction(group_name):
     category = data.get("category")
     timestamp = data.get("timestamp")
     explanation = data.get("explanation")
+    recurrence_interval = data.get("recurrence")
 
     if not all([from_user, to_user, amount, category]):
-        print([from_user, to_user, amount, category])
         return jsonify({"error": "Missing transaction details"}), 400
 
     try:
+        # Add the original transaction
         group.graph.add_transaction(from_user, to_user, amount, category, timestamp, explanation)
+        
+        # Handle recurring transactions if specified
+        if recurrence_interval:
+            future_transactions = handle_recurring_transaction(
+                {
+                    "from_user": from_user,
+                    "to_user": to_user,
+                    "amount": amount,
+                    "category": category,
+                    "timestamp": timestamp,
+                    "explanation": explanation,
+                },
+                recurrence_interval
+            )
+            for future_transaction in future_transactions:
+                future_transaction.pop("is_recurring", None)
+                group.graph.add_transaction(**future_transaction)
+
         save_groups(groups)
         return jsonify({"message": "Transaction added successfully."}), 200
     except ValueError as e:
-        return jsonify({"error": str(e)}), 400
+        return jsonify({"error": str(e)}), 405
+
+@app.route("/groups/<group_name>/deltransactions", methods=["POST"])
+def del_transaction(group_name):
+    """Add a member to a specific group."""
+    print("lalala")
+    group = groups.get(group_name)
+    if not group:
+        return jsonify({"error": f"Group '{group_name}' not found."}), 404
+
+    data = request.json
+
+    print(f"{data}")
+    from_user = data.get("from")
+    to_user = data.get("to")
+    amount = data.get("amount")
+    category = data.get("category")
+    timestamp = data.get("timestamp")
+    explanation = data.get("explanation")
+
+    print(f"{from_user, to_user, amount, category, timestamp, explanation}")
+    print(group.graph.visualize_transactions())
+
+    group.graph.del_transaction(from_user, to_user, amount, category, timestamp, explanation)
+    save_groups(groups)
+    return jsonify({"message": f"Transaction deleted from group '{group_name}'."}), 201
+
+
 
 @app.route("/groups/<group_name>/simplify-debts", methods=["POST"])
 def simplify_debts(group_name):
@@ -210,10 +298,6 @@ def simplify_debts(group_name):
 
     return jsonify({"message": f"Debts for group '{group_name}' simplified successfully."}), 200
 
-
-@app.route("/", methods=["GET"])
-def home():
-    return jsonify({"message": "Welcome to the Splitwise Clone API"}), 200
 
 @app.route("/groups/<group_name>/transactions/recent", methods=["GET"])
 def fetch_recent_transactions(group_name):
@@ -250,7 +334,6 @@ def add_splitbill(group_name):
     group = groups.get(group_name)
     if not group:
         return jsonify({"error": f"Group '{group_name}' not found."}), 404
-
     data = request.json
     from_user = data.get("from_user")  # Payer
     to_users = data.get("to_users")  # List of people who consumed
@@ -260,27 +343,24 @@ def add_splitbill(group_name):
     category = data.get("category")
     timestamp = data.get("timestamp")
     explanation = data.get("explanation")
-
     if not all([from_user, to_users, amounts, category, split_method]):
+        print(amounts)
+        print(from_user, to_users, amounts, category, split_method)
         return jsonify({"error": "Missing transaction details"}), 410
-
     if len(to_users) != len(amounts):
         print(to_users, amounts)
         return jsonify({"error": "Mismatch between to_users and amounts"}), 403
-
     try:
         if split_method in ["ratio", "percentage"]:
             if total_amount is None:
                 return jsonify({"error": "Total amount is required for ratio or percentage splits."}), 402
-
             if from_user in to_users:
                 payer_index = to_users.index(from_user)
-                amount_to_delete = amounts.pop(payer_index)
+                amounts.pop(payer_index)
                 to_users.pop(payer_index)
                 
             # Calculate total amounts 
-            calculated_total = sum(amounts) + amount_to_delete
-
+            calculated_total = sum(amounts) 
             # Add transactions for each user
             for to_user, amount in zip(to_users, amounts):
                 group.graph.add_transaction(from_user, to_user, total_amount * amount / calculated_total , category, timestamp, explanation)
@@ -289,7 +369,6 @@ def add_splitbill(group_name):
             for to_user, amount in zip(to_users, amounts):
                 if to_user != from_user:
                     group.graph.add_transaction(from_user, to_user, amount, category, timestamp, explanation)
-
         save_groups(groups)
         return jsonify({"message": "Transaction added successfully."}), 200
     except ValueError as e:
@@ -298,25 +377,19 @@ def add_splitbill(group_name):
     
 UPLOAD_FOLDER = 'uploads'
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
-
 @app.route('/scan-receipt', methods=['POST'])
 def scan_receipt():
     image = request.files.get('photo')
-
     if image and not allowed_file(image.filename):
         return jsonify({'error': 'File type not allowed'}), 500
-
     try:
         # Save the image for debugging purposes
         file_path = os.path.join(UPLOAD_FOLDER, image.filename)
         image.save(file_path)
-
         # Perform OCR using pytesseract
         receipt_details = scanner.process_expense_receipt(file_path)
-
         if not receipt_details or 'items' not in receipt_details or not receipt_details['items']:
-            return jsonify({'error': 'Could not extract the desired data from the photo'}), 502
-
+            return jsonify({'error': 'Could not extract the desired data from the photo'}), 422
         quantities = [item['quantity'] for item in receipt_details['items']]
         names = [item['name'] for item in receipt_details['items']]
         foods = []
@@ -329,36 +402,30 @@ def scan_receipt():
     except Exception as e:
         print(f"Error processing receipt: {e}")
         return jsonify({'error': 'Failed to process receipt'}), 501
-
     
-
 @app.route('/scan-payment', methods=['POST'])
 def scan_payment():
     image = request.files.get('photo')
-    name = request.form.get('name')  
-
+    name = request.form.get('name')  # Adjusted to match formData input
     if not image or not allowed_file(image.filename):
         return jsonify({'error': 'File type not allowed'}), 400
-
     try:
         # Save the image for debugging purposes
         file_path = os.path.join(UPLOAD_FOLDER, secure_filename(image.filename))
         image.save(file_path)
-
         # Perform OCR using scanner logic
         amount, name_found = scanner.process_payment_receipt(file_path, name)
-
         if amount is None:  # Check if amount extraction failed
-            return jsonify({'error': 'Could not extract the desired data from the photo'}), 422
-
+            return jsonify({'error': 'Amount could not be extracted from the photo.'}), 422
         return jsonify({'amount': amount, 'name_found': name_found})
-
     except Exception as e:
         print(f"Error processing receipt: {e}")
         return jsonify({'error': 'Failed to process receipt'}), 500
-
-
         
+
+@app.route("/", methods=["GET"])
+def home():
+    return jsonify({"message": "Welcome to the Splitwise Clone API"}), 200
 
 if __name__ == "__main__":
     app.run(debug=True)
