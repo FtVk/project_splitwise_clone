@@ -301,7 +301,6 @@ os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
 @app.route('/scan-receipt', methods=['POST'])
 def scan_receipt():
-    print("function hit")
     image = request.files.get('photo')
 
     if image and not allowed_file(image.filename):
@@ -336,7 +335,7 @@ def scan_receipt():
 @app.route('/scan-payment', methods=['POST'])
 def scan_payment():
     image = request.files.get('photo')
-    name = request.form.get('name')  # Adjusted to match formData input
+    name = request.form.get('name')  
 
     if not image or not allowed_file(image.filename):
         return jsonify({'error': 'File type not allowed'}), 400
@@ -350,7 +349,7 @@ def scan_payment():
         amount, name_found = scanner.process_payment_receipt(file_path, name)
 
         if amount is None:  # Check if amount extraction failed
-            return jsonify({'error': 'Amount could not be extracted from the photo.'}), 422
+            return jsonify({'error': 'Could not extract the desired data from the photo'}), 422
 
         return jsonify({'amount': amount, 'name_found': name_found})
 
