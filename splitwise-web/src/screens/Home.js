@@ -279,16 +279,28 @@ const Home = () => {
                 <Box mt={4}>
                   <Typography variant="h6" gutterBottom>
                     Balance Graph
-                  </Typography>
-                  <pre>{JSON.stringify(balanceData, null, 2)}</pre>
-                  <Button
-                    variant="contained"
-                    color="secondary"
-                    onClick={handleSimplifyDebts}
-                  >
-                    Simplify Debts
-                  </Button>
-                </Box>
+                    </Typography>
+                    <ul>
+                      {balanceData?.edges?.map((edge, index) => {
+                        const { from, to, amount } = edge; // Destructure each edge object
+                        return (
+                          <li key={index}>
+                            <span style={{ color: "#00A36C" }}>{from}</span> owes{" "}
+                            <span style={{ color: "#C41E3A" }}>{to}</span> an amount of{" "}
+                            <strong>{Number(amount).toFixed(2)}</strong>
+                          </li>
+                        );
+                      }) || <li>No data available</li>}
+                    </ul>
+                    <Button
+                      variant="contained"
+                      color="secondary"
+                      onClick={handleSimplifyDebts}
+                    >
+                      Simplify Debts
+                    </Button>
+                  </Box>
+
               </>
             )}
           </Box>
