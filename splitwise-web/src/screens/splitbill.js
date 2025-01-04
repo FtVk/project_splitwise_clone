@@ -9,6 +9,7 @@ import {
   Snackbar,
   Alert,
   Typography,
+  Checkbox,
   Box,
   FormControl,
   InputLabel,
@@ -37,6 +38,7 @@ const SplitBill = () => {
   const [foodList, setFoodList] = useState([]);
   const [assignments, setAssignments] = useState({});
   const [receiptDetails, setReceiptDetails] = useState({});
+  const [splitEqually, setSplitEqually] = useState(false);
 
   // Fetch all groups on component mount
   useEffect(() => {
@@ -62,20 +64,39 @@ const SplitBill = () => {
   };
 
   const handleWhoAteChange = (member, value) => {
-    // Convert the value to a number
-    const numericValue = Number(value);
-  
-    // Check if the value is a valid number and greater than or equal to 0
-    if (!isNaN(numericValue) && numericValue >= 0) {
-      // Update the state or perform the necessary action
-      setWhoAte((prev) => ({
-        ...prev,
-        [member]: numericValue,
-      }));
-    } else {
-      // Optionally, you can handle invalid input here (e.g., show an error message)
-      console.log("Invalid input. Please enter a positive number.");
+
+    if (!splitEqually) {
+      // Convert the value to a number
+      const numericValue = Number(value);
+    
+      // Check if the value is a valid number and greater than or equal to 0
+      if (!isNaN(numericValue) && numericValue >= 0) {
+        // Update the state or perform the necessary action
+        setWhoAte((prev) => ({
+          ...prev,
+          [member]: numericValue,
+        }));
+      } else {
+        // Optionally, you can handle invalid input here (e.g., show an error message)
+        console.log("Invalid input. Please enter a positive number.");
+      }
     }
+  };
+
+  const handleSplitEquallyChange = (event) => {
+    const isChecked = event.target.checked;
+    setSplitEqually(isChecked);
+
+    if (isChecked) {
+      setSplitMethod("ratio");
+      const equalSplit = members.reduce((acc, member) => ({ ...acc, [member]: 1 }), {});
+      setWhoAte(equalSplit);
+    } else {
+      // When unchecked, reset the amounts to an empty string
+      const resetSplit = members.reduce((acc, member) => ({ ...acc, [member]: "" }), {});
+      setWhoAte(resetSplit);
+    }
+  };
   };
 
   const handleFileUpload = (event) => {
@@ -488,18 +509,30 @@ const SplitBill = () => {
           )}
   
           <Typography variant="h6" mt={2}>Who Ate?</Typography>
-          {members.map((member) => (
-            <TextField
-              key={member}
-              label={member}
-              type="number"
-              value={whoAte[member] || ""}
-              onChange={(e) => handleWhoAteChange(member, e.target.value)}
-              placeholder={`Enter ${splitMethod !== "amount" ? splitMethod : "contribution"}`}
-              inputProps={{ min: 0 }} // Prevent negative numbers
-              style={{ marginRight: "8px", marginBottom: "8px" }}
-            />
-          ))}
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={splitEqually}
+                onChange={handleSplitEquallyChange}
+                sx={{ "&.Mui-checked": { color: "#1e40af" } }}
+              />
+            }
+            label="Split Equally"
+          />
+          <Box>
+            {members.map((member) => (
+              <TextField
+                key={member}
+                label={member}
+                type="number"
+                value={whoAte[member] || ""}
+                onChange={(e) => handleWhoAteChange(member, e.target.value)}
+                placeholder={`Enter ${splitMethod !== "amount" ? splitMethod : "contribution"}`}
+                inputProps={{ min: 0 }} // Prevent negative numbers
+                style={{ marginRight: "8px", marginBottom: "8px" }}
+              />
+            ))}
+          </Box>
   
           <Typography variant="h6" mt={2}>Category:</Typography>
           <TextField
@@ -552,56 +585,56 @@ const SplitBill = () => {
                 </Typography>
                 {foodList.map((food) => (
                   <Box key={food} mb={2} display="flex" alignItems="center">
-                  <Typography style={{ marginRight: "16px" }}>{food}</Typography>
-                  <Select
-                    value={assignments[food]}
-                    onChange={(e) => handleAssignmentChange(food, e.target.value)}
-                    displayEmpty
-                    style={{ minWidth: "200px" }}
-                  >
-                    <MenuItem value="">Select a user</MenuItem>
-                    {members.map((member) => (
-                      <MenuItem key={member} value={member}>
-                        {member}
-                      </MenuItem>
-                    ))}
-                  </Select>
+                    <Typography style={{ marginRight: "16px" }}>{food}</Typography>
+                    <Select
+                      value={assignments[food]}
+                      onChange={(e) => handleAssignmentChange(food, e.target.value)}
+                      displayEmpty
+                      style={{ minWidth: "200px" }}
+                    >
+                      <MenuItem value="">Select a user</MenuItem>
+                      {members.map((member) => (
+                        <MenuItem key={member} value={member}>
+                          {member}
+                        </MenuItem>
+                      ))}
+                    </Select>
                   </Box>
-              ))}
-              <Typography mt={2} style={{ color: "gray" }}>
-                Please enter payer, category and explanation (optional), then click on submit. 
-              </Typography>
-              <Typography mt={2} style={{ color: "gray" }}>
-                Tax will be considered in adding transactions.
-              </Typography>
-              <Button
-                variant="contained"
-                color="primary"
-                onClick={handleFoodAssignmentsSubmit}
-                style={{ marginTop: "16px" }}
-              >
-                Submit Food Assignments
-              </Button>
-            </Box>
-          )}
-        </Box>
-
-        <Snackbar
-          open={snackbar.open}
-          autoHideDuration={6000}
-          onClose={() => setSnackbar({ open: false, message: "", severity: "" })}
-        >
-          <Alert
+                ))}
+                <Typography mt={2} style={{ color: "gray" }}>
+                  Please enter payer, category and explanation (optional), then click on submit. 
+                </Typography>
+                <Typography mt={2} style={{ color: "gray" }}>
+                  Tax will be considered in adding transactions.
+                </Typography>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={handleFoodAssignmentsSubmit}
+                  style={{ marginTop: "16px" }}
+                >
+                  Submit Food Assignments
+                </Button>
+              </Box>
+            )}
+          </Box>
+  
+          <Snackbar
+            open={snackbar.open}
+            autoHideDuration={6000}
             onClose={() => setSnackbar({ open: false, message: "", severity: "" })}
-            severity={snackbar.severity}
           >
-            {snackbar.message}
-          </Alert>
-        </Snackbar>
-      </>
-    )}
-  </Box>
-);
+            <Alert
+              onClose={() => setSnackbar({ open: false, message: "", severity: "" })}
+              severity={snackbar.severity}
+            >
+              {snackbar.message}
+            </Alert>
+          </Snackbar>
+        </>
+      )}
+    </Box>
+  );
 };
 
 export default SplitBill;
