@@ -1,137 +1,140 @@
-# Expense Tracker Application
 
-## Overview
-The Expense Tracker is a GUI-based application built using Python and wxPython. It allows users to manage group expenses, track balances, and visualize financial transactions with bar charts. This is especially useful for splitting bills among groups like friends, family, or coworkers.
+
+# Expense Manager API
+
+This project is a Flask-based API for managing expenses, tracking group transactions, simplifying debts, and processing receipt data. It serves as a basic implementation of a "Splitwise"-like application with added features for receipt and payment processing using OCR.
 
 ## Features
-1. **Group Management**:
-   - Add and manage multiple groups.
-   - Assign members to each group.
 
-2. **Expense Management**:
-   - Record expenses with a payer and one or more debtors.
-   - Automatically split the expense amount equally among debtors.
+1. **Group Management**
+   - Create, list, and manage groups.
+   - Add members to groups.
+   
+2. **Expense Tracking**
+   - Add, list, and search transactions within groups.
+   - Fetch and manage balance graphs for groups.
+   - Simplify group debts.
 
-3. **Balance Tracking**:
-   - View current balances for all group members.
+3. **Split Bill**
+   - Supports equal, ratio-based, and percentage-based bill splitting.
 
-4. **Visualization**:
-   - Display a bar graph showing balances for each user.
+4. **Receipt and Payment Processing**
+   - OCR-based receipt scanning to extract transaction details.
+   - Payment receipt processing for amount extraction.
 
-5. **Data Persistence**:
-   - Save groups and expenses to a file.
-   - Load saved data when the application restarts.
-
----
+5. **Data Persistence**
+   - Group and transaction data are saved to and loaded from a JSON file.
 
 ## Installation
 
-### Prerequisites
-- Python 3.7+
-- wxPython
-- matplotlib
-
-### Install Dependencies
-```bash
-pip install wxpython matplotlib
-```
-
----
-
-## How to Run
-
-1. Clone the repository or download the source code.
-2. Navigate to the project directory.
-3. Run the main Python file:
+1. Clone the repository:
    ```bash
-   python main.py
+   git clone https://github.com/your-repo/expense-manager.git
+   cd expense-manager
    ```
 
----
+2. Install dependencies:
+   ```bash
+   pip install -r requirements.txt
+   ```
 
-## Usage
+3. Run the application:
+   ```bash
+   python app.py
+   ```
 
-### Main Components
-1. **Group Selection**:
-   - Use the dropdown to select an existing group.
-   - Add a new group by clicking the "Add Group" button.
+## API Endpoints
 
-2. **User Management**:
-   - Add users to the selected group using the "Add User" button.
+### **Home**
+- **`GET /`**
+  - Returns a welcome message.
 
-3. **Add Expense**:
-   - Select a payer from the dropdown.
-   - Check one or more debtors in the checklist.
-   - Enter the expense amount.
-   - Click "Add Expense" to record the transaction.
+### **Group Management**
+- **`GET /groups`**
+  - Fetch all groups.
+- **`POST /groups`**
+  - Create a new group.
+  - **Payload**: `{ "name": "group_name" }`
+  
+- **`GET /groups/<group_name>/members`**
+  - Fetch members of a specific group.
+- **`POST /groups/<group_name>/members`**
+  - Add a member to a specific group.
+  - **Payload**: `{ "name": "member_name" }`
 
-4. **View Balances**:
-   - Click "View Balance" to display each user's balance in a popup.
+### **Transaction Management**
+- **`GET /groups/<group_name>/transactions`**
+  - Fetch all transactions in a group.
+- **`POST /groups/<group_name>/transactions`**
+  - Add a transaction to a group.
+  - **Payload**: 
+    ```json
+    {
+      "from_user": "user_name",
+      "to_user": "user_name",
+      "amount": 100,
+      "category": "Food",
+      "timestamp": "2023-12-31T12:00:00",
+      "explanation": "Lunch"
+    }
+    ```
+- **`POST /groups/<group_name>/simplify-debts`**
+  - Simplify group debts.
 
-5. **View Graph**:
-   - Click "View Graph" to visualize user balances with a bar chart.
+### **Split Bill**
+- **`POST /groups/<group_name>/group_transactions`**
+  - Add a split bill transaction.
+  - **Payload**: 
+    ```json
+    {
+      "from_user": "payer_name",
+      "to_users": ["user1", "user2"],
+      "amounts": [50, 50],
+      "split_method": "equal",
+      "category": "Dinner",
+      "timestamp": "2023-12-31T12:00:00",
+      "explanation": "Dinner bill"
+    }
+    ```
 
-6. **Save and Exit**:
-   - Data is saved automatically when you close the application.
+### **Balance Graph**
+- **`GET /groups/<group_name>/balance`**
+  - Fetch the balance graph for a specific group.
 
----
+### **Receipt and Payment Processing**
+- **`POST /scan-receipt`**
+  - Process a receipt image to extract item details.
+  - **Form Data**: `photo` (file).
+- **`POST /scan-payment`**
+  - Process a payment receipt image to extract the amount.
+  - **Form Data**: 
+    - `photo` (file)
+    - `name` (string).
 
-## Code Explanation
+## File Structure
 
-### Key Modules
-- **GUI (`ExpenseTracker`)**:
-  - Handles the user interface using wxPython.
-- **Data Models**:
-  - `Group` and `User` classes manage group and member data.
-- **Graph (`matplotlib`)**:
-  - Visualize balances in a bar chart.
-- **Data Persistence**:
-  - Functions `save_data()` and `load_data()` save and retrieve group data using Python's `pickle` module.
+- `app.py`: Main Flask application.
+- `core/`: Contains core logic for expense and debt management.
+  - `graph.py`: Defines the `ExpenseGraph`.
+  - `debt_simplification.py`: Debt simplification logic.
+  - `balance_calculation.py`: Balance graph calculation logic.
+- `models/`: Contains data models for `Group` and `User`.
+- `utils/`: Utilities, including the `receipt_scanner`.
+- `data/graph.json`: Stores persistent group and transaction data.
+- `uploads/`: Stores uploaded receipt images.
 
-### Core Functionalities
-1. **Data Persistence**:
-   - `save_data`: Saves groups and their members to a file.
-   - `load_data`: Loads saved groups and members when the app starts.
-   
-2. **Expense Calculation**:
-   - Splits expenses equally among selected debtors.
+## Requirements
 
-3. **Graph Updates**:
-   - Updates a directed graph to manage who owes whom.
+- Python 3.8+
+- Flask
+- Flask-CORS
+- Pillow
+- pytesseract (for OCR)
 
----
+## Running Tests
 
-## Example Usage
-
-### Adding a Group and Users
-1. Click "Add Group" and name it (e.g., *Friends*).
-2. Select the new group.
-3. Add users like *Alice* and *Bob*.
-
-### Adding an Expense
-1. Select the payer (e.g., *Alice*).
-2. Check debtors (e.g., *Bob*).
-3. Enter the amount (e.g., 100).
-4. Click "Add Expense".
-
-### Viewing Balances and Graph
-1. Click "View Balance" to see how much *Bob* owes *Alice*.
-2. Click "View Graph" for a visual representation.
-
----
-
-## Known Issues
-1. Ensure no duplicate names when adding groups or users.
-2. Always select a group before performing actions like adding users or expenses.
-
----
-
-## Future Enhancements
-- Allow weighted expense splitting (e.g., by percentages).
-- Support for deleting groups, users, or specific expenses.
-- Advanced visualizations for complex graphs.
-
----
+To test the application, use tools like Postman or cURL to interact with the endpoints. Ensure that `data/graph.json` is writable and accessible for data persistence.
 
 ## License
+
 This project is open-source and available under the MIT License.
