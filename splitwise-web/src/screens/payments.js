@@ -21,15 +21,16 @@ const PaymentsPage = () => {
   const [selectedGroup, setSelectedGroup] = useState(null);
   const [balances, setBalances] = useState([]);
   const [members, setMembers] = useState([]);
-  const [fromUser, setFromUser] = useState("");
-  const [toUser, setToUser] = useState("");
+  const [fromUser , setFromUser ] = useState("");
+  const [toUser , setToUser ] = useState("");
   const [category, setCategory] = useState("Payment");
   const [explanation, setExplanation] = useState("");
   const [amount, setAmount] = useState("");
   const [currency, setCurrency] = useState("USD");
   const [snackbar, setSnackbar] = useState({ open: false, message: "", severity: "success" });
-  const [foundUser, setFoundUser] = useState("");
+  const [foundUser , setFoundUser ] = useState("");
   const [selectedFile, setSelectedFile] = useState(null);
+  const [paymentMethod, setPaymentMethod] = useState("");
 
   useEffect(() => {
     api.fetchGroups().then(setGroups).catch(console.error);
@@ -53,8 +54,8 @@ const PaymentsPage = () => {
     if (confirm) {
       api
         .addTransaction(selectedGroup, {
-          from_user: to,
-          to_user: from,
+          from_user: from, // Corrected from to
+          to_user: to, // Corrected to
           amount,
           category: "payment",
           timestamp: new Date().toISOString(),
@@ -68,11 +69,10 @@ const PaymentsPage = () => {
           loadBalanceGraph(selectedGroup);
         })
         .catch(() =>
-          setSnackbar({open: true, message: "Failed to record payment. Please try again.", severity: "error"})
+          setSnackbar({ open: true, message: "Failed to record payment. Please try again.", severity: "error" })
         );
     }
   };
-  
 
   const handleGroupClick = (groupName) => {
     loadBalanceGraph(groupName);
@@ -80,14 +80,14 @@ const PaymentsPage = () => {
   };
 
   const handleAddPayment = async () => {
-    if (!selectedGroup || !fromUser || !toUser || !amount) {
+    if (!selectedGroup || !fromUser  || !toUser  || !amount) {
       alert("Please fill out all fields.");
       return;
     }
 
     const transactionData = {
-      from_user: fromUser,
-      to_user: toUser,
+      from_user: fromUser ,
+      to_user: toUser ,
       amount: parseFloat(amount),
       category,
       explanation,
@@ -97,14 +97,28 @@ const PaymentsPage = () => {
       await api.addTransaction(selectedGroup, transactionData);
       alert("Payment added successfully!");
       loadBalanceGraph(selectedGroup);
-      setFromUser("");
-      setToUser("");
+      setFromUser ("");
+      setToUser ("");
       setExplanation("");
       setAmount("");
       setCurrency("USD");
-      setFoundUser("");
+      setFoundUser ("");
     } catch (error) {
       alert("Failed to add payment. Please try again.");
+    }
+  };
+
+  const handlePaymentMethod = () => {
+    if (!paymentMethod) {
+      alert("Please select a payment method.");
+      return;
+    }
+
+    if (paymentMethod === "cash") {
+      handleScan();
+    } else if (paymentMethod === "online") {
+      const paymentUrl = "https://example-payment-website.com";
+      window.location.href = paymentUrl;
     }
   };
 
@@ -112,11 +126,11 @@ const PaymentsPage = () => {
     setSelectedFile(event.target.files[0]);
   };
 
-  const handleCameraClick = async (setSelectedFile) => {
-    if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-      try {
-        const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-  
+const handleCameraClick = async (setSelectedFile) => {
+  if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+
         // Create a container for the video and image preview
         const container = document.createElement("div");
         container.style.position = "fixed";
@@ -124,6 +138,7 @@ const PaymentsPage = () => {
         container.style.left = "0";
         container.style.width = "100%";
         container.style.height = "100%";
+        container.style
         container.style.backgroundColor = "rgba(0, 0, 0, 0.8)";
         container.style.zIndex = "1000";
         container.style.overflowY = "auto";
@@ -132,7 +147,7 @@ const PaymentsPage = () => {
         container.style.alignItems = "center";
         container.style.padding = "20px";
         document.body.appendChild(container);
-  
+
         // Create and add the video element
         const videoElement = document.createElement("video");
         videoElement.srcObject = stream;
@@ -141,12 +156,12 @@ const PaymentsPage = () => {
         videoElement.style.maxWidth = "100%";
         videoElement.style.borderRadius = "10px";
         container.appendChild(videoElement);
-  
+
         // Wait for the video to load
         await new Promise((resolve) => {
           videoElement.onloadedmetadata = () => resolve();
         });
-  
+
         // Create and add the "Capture Photo" button
         const captureButton = document.createElement("button");
         captureButton.textContent = "Capture Photo";
@@ -158,7 +173,7 @@ const PaymentsPage = () => {
         captureButton.style.borderRadius = "5px";
         captureButton.style.cursor = "pointer";
         container.appendChild(captureButton);
-  
+
         // Create an element to display the captured photo
         const imgElement = document.createElement("img");
         imgElement.style.marginTop = "10px";
@@ -166,7 +181,7 @@ const PaymentsPage = () => {
         imgElement.style.maxWidth = "90%";
         imgElement.style.borderRadius = "10px";
         container.appendChild(imgElement);
-  
+
         // Create the "Submit Photo" button
         const submitButton = document.createElement("button");
         submitButton.textContent = "Submit Photo";
@@ -179,7 +194,7 @@ const PaymentsPage = () => {
         submitButton.style.cursor = "pointer";
         submitButton.style.display = "none"; // Initially hidden
         container.appendChild(submitButton);
-  
+
         // Handle photo capture
         let capturedFile = null;
         captureButton.addEventListener("click", () => {
@@ -187,23 +202,23 @@ const PaymentsPage = () => {
           const context = canvas.getContext("2d");
           canvas.width = videoElement.videoWidth;
           canvas.height = videoElement.videoHeight;
-  
+
           context.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
-  
+
           canvas.toBlob((blob) => {
             if (blob) {
               capturedFile = new File([blob], "captured-photo.jpg", { type: "image/jpeg" });
-  
+
               // Display the captured photo
               imgElement.src = URL.createObjectURL(blob);
               imgElement.style.display = "block"; // Make the image visible
-  
+
               // Show the "Submit Photo" button
               submitButton.style.display = "inline-block";
             }
           });
         });
-  
+
         // Handle photo submission
         submitButton.addEventListener("click", () => {
           if (capturedFile) {
@@ -212,7 +227,7 @@ const PaymentsPage = () => {
             closeContainer();
           }
         });
-  
+
         // Create and add the "Close" button
         const closeButton = document.createElement("button");
         closeButton.textContent = "Close";
@@ -224,11 +239,11 @@ const PaymentsPage = () => {
         closeButton.style.borderRadius = "5px";
         closeButton.style.cursor = "pointer";
         container.appendChild(closeButton);
-  
+
         closeButton.addEventListener("click", () => {
           closeContainer();
         });
-  
+
         const closeContainer = () => {
           // Stop the video stream
           stream.getTracks().forEach((track) => track.stop());
@@ -242,30 +257,27 @@ const PaymentsPage = () => {
     } else {
       alert("Camera not supported in this browser");
     }
-  };  
-  
+  };
 
   const handleScan = async () => {
     if (!selectedFile) {
       alert("Please provide a photo.");
       return;
     }
-  
     if (!toUser ) {
       alert("Please select To User.");
       return;
     }
-  
+
     const formData = new FormData();
     formData.append("photo", selectedFile);
     formData.append("name", toUser );
-  
+
     try {
       const receiptData = await api.scanPayment(formData);
       
       setAmount(receiptData.amount);
       setFoundUser (receiptData.name_found);
-  
     } catch (error) {
       // Check if the error response has a specific message
       if (error.response && error.response.data && error.response.data.error) {
@@ -291,15 +303,12 @@ const PaymentsPage = () => {
   
     // Check if the value is a valid number and greater than or equal to 0
     if (!isNaN(numericValue) && numericValue >= 0) {
-      // Update the state or perform the necessary action
       setAmount(numericValue);
     } else {
-      // Optionally, you can handle invalid input here (e.g., show an error message)
       console.log("Invalid input. Please enter a positive number.");
     }
   };
-  
-  
+
   return (
     <Box sx={{ padding: 4 }}>
       <Typography
@@ -308,7 +317,7 @@ const PaymentsPage = () => {
       >
         Payments Page
       </Typography>
-  
+
       {/* Group Cards */}
       <Box sx={{ marginBottom: 4 }}>
         <Typography variant="h5" sx={{ fontWeight: "bold", marginBottom: 2 }}>
@@ -338,7 +347,7 @@ const PaymentsPage = () => {
           ))}
         </Grid>
       </Box>
-  
+
       {/* Balances Section */}
       {selectedGroup && (
         <Box>
@@ -381,12 +390,12 @@ const PaymentsPage = () => {
                         Record Payment
                       </Button>
                     </CardContent>
-                  </Card>
+                    </Card>
                 </Grid>
               ))}
             </Grid>
           )}
-  
+
           {/* Custom Payment Form */}
           <Box mt={4}>
             <Typography variant="h5" sx={{ fontWeight: "bold", marginBottom: 2 }}>
@@ -394,7 +403,7 @@ const PaymentsPage = () => {
             </Typography>
             <FormControl fullWidth margin="normal">
               <InputLabel>Select From User</InputLabel>
-              <Select value={fromUser} onChange={(e) => setFromUser(e.target.value)}>
+              <Select value={fromUser } onChange={(e) => setFromUser (e.target.value)}>
                 {members.map((member) => (
                   <MenuItem key={member} value={member}>
                     {member}
@@ -402,10 +411,10 @@ const PaymentsPage = () => {
                 ))}
               </Select>
             </FormControl>
-  
+
             <FormControl fullWidth margin="normal">
               <InputLabel>Select To User</InputLabel>
-              <Select value={toUser} onChange={(e) => setToUser(e.target.value)}>
+              <Select value={toUser } onChange={(e) => setToUser (e.target.value)}>
                 {members.map((member) => (
                   <MenuItem key={member} value={member}>
                     {member}
@@ -413,7 +422,7 @@ const PaymentsPage = () => {
                 ))}
               </Select>
             </FormControl>
-  
+
             <TextField
               label="Category"
               value={category}
@@ -445,72 +454,88 @@ const PaymentsPage = () => {
                 <MenuItem value="IRR">IRR</MenuItem>
               </Select>
             </FormControl>
-            {/* Conditional message display */}
-            {foundUser !== "" && (
-              <Typography
-                variant="h6"
-                sx={{
-                  color: foundUser ? "#61bb82 " : "#e86448",
-                  fontWeight: "bold",
-                  marginTop: 2,
-                }}
-              >
-                {foundUser
-                  ? `The name ${toUser} has been found in the receipt!`
-                  : `The name ${toUser} has not been found in the receipt.`}
-              </Typography>
-            )}
-
             <Button variant="contained" color="primary" onClick={handleAddPayment}>
               Add Payment
             </Button>
           </Box>
-  
+
           {/* Receipt Scanning Section */}
           <Box mt={4} id="camera-root">
             <Typography variant="h5" sx={{ fontWeight: "bold", marginBottom: 2 }}>
-              Scan Receipt
+              Choose Payment Method
             </Typography>
-            <input
-              accept="image/*"
-              type="file"
-              onChange={handleFileUpload}
-              style={{ display: "none" }}
-              id="upload-button"
-            />
-            <label htmlFor="upload-button">
-              <Button variant="contained" component="span" color="secondary" sx={{ marginRight: 2 }}>
-                Upload Receipt
-              </Button>
-            </label>
-            <Button variant="contained" color="success" onClick={() => handleCameraClick(setSelectedFile)}>
-              Use Camera
-            </Button>
+
+            {/* Payment Method Dropdown */}
+            <FormControl fullWidth margin="normal">
+              <InputLabel>Payment Method</InputLabel>
+              <Select
+                value={paymentMethod}
+                onChange={(e) => setPaymentMethod(e.target.value)}
+              >
+                <MenuItem value="cash">Cash/Bank Counter</MenuItem>
+                <MenuItem value="online">Online Payment</MenuItem>
+              </Select>
+            </FormControl>
+
+            {/* Conditional Section for Cash/Bank Counter */}
+            {paymentMethod === "cash" && (
+              <>
+                <Typography variant="body1" sx={{ marginTop: 2 }}>
+                  Upload a receipt photo or use the scanner to proceed with cash/bank counter payment.
+                </Typography>
+                <input
+                  accept="image/*"
+                  type="file"
+                  onChange={handleFileUpload}
+                  style={{ display: "none" }}
+                  id="upload-button"
+                />
+                <label htmlFor="upload-button">
+                  <Button
+                    variant="contained"
+                    component="span"
+                    color="secondary"
+                    sx={{ marginRight: 2 }}
+                  >
+                    Upload Receipt
+                  </Button>
+                </label>
+                <Button
+                  variant="contained"
+                  color="success"
+                  onClick={handleCameraClick}
+                  sx={{ marginTop: 2 }}
+                >
+                  Use Camera
+                </Button>
+              </>
+            )}
+
+            {/* Proceed Button */}
             <Button
               variant="contained"
               color="primary"
-              onClick={handleScan}
-              sx={{ marginLeft: 2 }}
+              onClick={handlePaymentMethod}
+              sx={{ marginTop: 2 }}
             >
-              Scan 
+              Proceed to Payment
             </Button>
           </Box>
+
+          {/* Snackbar */}
+          <Snackbar
+            open={snackbar.open}
+            autoHideDuration={6000}
+            onClose={() => setSnackbar({ ...snackbar, open: false })}
+          >
+            <Alert onClose={() => setSnackbar({ ...snackbar, open: false })} severity={snackbar.severity}>
+              {snackbar.message}
+            </Alert>
+          </Snackbar>
         </Box>
       )}
-  
-      {/* Snackbar */}
-      <Snackbar
-        open={snackbar.open}
-        autoHideDuration={6000}
-        onClose={() => setSnackbar({ ...snackbar, open: false })}
-      >
-        <Alert onClose={() => setSnackbar({ ...snackbar, open: false })} severity={snackbar.severity}>
-          {snackbar.message}
-        </Alert>
-      </Snackbar>
     </Box>
   );
-};  
-
+};
 
 export default PaymentsPage;
