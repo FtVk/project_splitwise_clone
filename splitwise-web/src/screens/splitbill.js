@@ -82,79 +82,129 @@ const SplitBill = () => {
     setSelectedFile(event.target.files[0]);
   };
 
-  const handleCameraClick = async () => {
+  const handleCameraClick = async (setSelectedFile) => {
     if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
       try {
         const stream = await navigator.mediaDevices.getUserMedia({ video: true });
   
-        // Create a video element to display the live camera feed
+        // Create a container for the video and image preview
+        const container = document.createElement("div");
+        container.style.position = "fixed";
+        container.style.top = "0";
+        container.style.left = "0";
+        container.style.width = "100%";
+        container.style.height = "100%";
+        container.style.backgroundColor = "rgba(0, 0, 0, 0.8)";
+        container.style.zIndex = "1000";
+        container.style.overflowY = "auto";
+        container.style.display = "flex";
+        container.style.flexDirection = "column";
+        container.style.alignItems = "center";
+        container.style.padding = "20px";
+        document.body.appendChild(container);
+  
+        // Create and add the video element
         const videoElement = document.createElement("video");
         videoElement.srcObject = stream;
-        videoElement.setAttribute("playsinline", true); // For iOS compatibility
+        videoElement.setAttribute("playsinline", true);
         videoElement.autoplay = true;
+        videoElement.style.maxWidth = "100%";
+        videoElement.style.borderRadius = "10px";
+        container.appendChild(videoElement);
   
-        // Append the video element to the DOM
-        document.body.appendChild(videoElement);
-  
-        // Wait for the video stream to start
+        // Wait for the video to load
         await new Promise((resolve) => {
-          videoElement.onloadedmetadata = () => {
-            resolve();
-          };
+          videoElement.onloadedmetadata = () => resolve();
         });
   
-        // Add a button to capture the photo
+        // Create and add the "Capture Photo" button
         const captureButton = document.createElement("button");
         captureButton.textContent = "Capture Photo";
-        document.body.appendChild(captureButton);
+        captureButton.style.marginTop = "10px";
+        captureButton.style.padding = "10px 20px";
+        captureButton.style.backgroundColor = "#00796b";
+        captureButton.style.color = "#ffffff";
+        captureButton.style.border = "none";
+        captureButton.style.borderRadius = "5px";
+        captureButton.style.cursor = "pointer";
+        container.appendChild(captureButton);
   
-        let capturedFile = null; // To hold the captured file
+        // Create an element to display the captured photo
+        const imgElement = document.createElement("img");
+        imgElement.style.marginTop = "10px";
+        imgElement.style.display = "none"; // Initially hidden
+        imgElement.style.maxWidth = "90%";
+        imgElement.style.borderRadius = "10px";
+        container.appendChild(imgElement);
   
+        // Create the "Submit Photo" button
+        const submitButton = document.createElement("button");
+        submitButton.textContent = "Submit Photo";
+        submitButton.style.marginTop = "10px";
+        submitButton.style.padding = "10px 20px";
+        submitButton.style.backgroundColor = "#4caf50";
+        submitButton.style.color = "#ffffff";
+        submitButton.style.border = "none";
+        submitButton.style.borderRadius = "5px";
+        submitButton.style.cursor = "pointer";
+        submitButton.style.display = "none"; // Initially hidden
+        container.appendChild(submitButton);
+  
+        // Handle photo capture
+        let capturedFile = null;
         captureButton.addEventListener("click", () => {
-          // Create a canvas to draw the captured frame
           const canvas = document.createElement("canvas");
           const context = canvas.getContext("2d");
           canvas.width = videoElement.videoWidth;
           canvas.height = videoElement.videoHeight;
   
-          // Draw the video frame to the canvas
           context.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
   
-          // Convert the canvas to a blob (image file)
           canvas.toBlob((blob) => {
             if (blob) {
-              // Create a file from the blob
               capturedFile = new File([blob], "captured-photo.jpg", { type: "image/jpeg" });
   
-              // Display the captured image
-              const imgElement = document.createElement("img");
+              // Display the captured photo
               imgElement.src = URL.createObjectURL(blob);
-              document.body.appendChild(imgElement);
+              imgElement.style.display = "block"; // Make the image visible
   
-              console.log("Captured image file:", capturedFile);
-  
-              // Add a submit button after capturing
-              const submitButton = document.createElement("button");
-              submitButton.textContent = "Submit Photo";
-              document.body.appendChild(submitButton);
-  
-              // Handle submission
-              submitButton.addEventListener("click", () => {
-                if (capturedFile) {
-                  setSelectedFile(capturedFile); // Set the captured file
-                  alert("Photo submitted!");
-  
-                  // Clean up the DOM
-                  videoElement.remove();
-                  captureButton.remove();
-                  imgElement.remove();
-                  submitButton.remove();
-                  stream.getTracks().forEach((track) => track.stop());
-                }
-              });
+              // Show the "Submit Photo" button
+              submitButton.style.display = "inline-block";
             }
           });
         });
+  
+        // Handle photo submission
+        submitButton.addEventListener("click", () => {
+          if (capturedFile) {
+            setSelectedFile(capturedFile);
+            alert("Photo submitted successfully!");
+            closeContainer();
+          }
+        });
+  
+        // Create and add the "Close" button
+        const closeButton = document.createElement("button");
+        closeButton.textContent = "Close";
+        closeButton.style.marginTop = "10px";
+        closeButton.style.padding = "10px 20px";
+        closeButton.style.backgroundColor = "#ff5252";
+        closeButton.style.color = "#ffffff";
+        closeButton.style.border = "none";
+        closeButton.style.borderRadius = "5px";
+        closeButton.style.cursor = "pointer";
+        container.appendChild(closeButton);
+  
+        closeButton.addEventListener("click", () => {
+          closeContainer();
+        });
+  
+        const closeContainer = () => {
+          // Stop the video stream
+          stream.getTracks().forEach((track) => track.stop());
+          // Remove the container
+          document.body.removeChild(container);
+        };
       } catch (error) {
         console.error("Error accessing the camera:", error);
         alert("Unable to access the camera. Please check permissions.");
@@ -163,41 +213,48 @@ const SplitBill = () => {
       alert("Camera not supported in this browser");
     }
   };  
-  
 
   const handleScan = async () => {
     if (!selectedFile) {
       alert("Please provide a photo.");
       return;
     }
-
+  
     const formData = new FormData();
     formData.append("photo", selectedFile);
-
+  
     try {
       const receipt_data = await api.extractFoods(formData);
-
-      if (receipt_data.error) {
-        alert(receipt_data.error);
-        return;
-      }
-
+  
       setFoodList(receipt_data.foods);
       setReceiptDetails(receipt_data.receiptDetails);
-
+  
       const initialAssignments = receipt_data.foods.reduce(
         (acc, food) => ({ ...acc, [food]: "" }),
         {}
       );
       setAssignments(initialAssignments);
-
+  
       const membersResponse = await api.fetchGroupMembers(selectedGroup); // Fetch group members
       setMembers(membersResponse);
     } catch (error) {
-      console.error("Error processing the photo:", error);
-      alert("An unexpected error occurred. Please try again.");
+      // Check if the error response has a specific message
+      if (error.response && error.response.data && error.response.data.error) {
+        setSnackbar({
+          open: true,
+          message: error.response.data.error,
+          severity: "error",
+        });
+      } else {
+        console.error("Error processing the photo:", error);
+        setSnackbar({
+          open: true,
+          message: "An unexpected error occurred. Please try again.",
+          severity: "error",
+        });
+      }
     }
-};
+  };
 
 
   const handleAssignmentChange = (food, member) => {
@@ -475,7 +532,11 @@ const SplitBill = () => {
             </Typography>
   
             <div>
-              <Button variant="contained" onClick={handleCameraClick} style={{ marginRight: "8px" }}>
+              <Button 
+                variant="contained" 
+                onClick={() => handleCameraClick(setSelectedFile)} 
+                style={{ marginRight: "8px" }}
+              >
                 Use Camera
               </Button>
               <input type="file" accept="image/*" onChange={handleFileUpload} style={{ marginRight: "8px" }} />
