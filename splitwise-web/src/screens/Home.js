@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { fetchUsers } from "../services/api";
 //import { TextField, Button, Typography, Container, Alert, Dialog, DialogActions, DialogContent, DialogTitle } from "@mui/material";
 import Autocomplete from "@mui/material/Autocomplete";
 
@@ -129,23 +128,32 @@ const Home = () => {
     alert("Debts simplified successfully!");
   };
 
+
   const handleSearch = async () => {
     const filteredTransactions = await api.searchTransactions(selectedGroup, searchPhrase);
     setTransactions(filteredTransactions);
-  };
+};
 
-  const handleAmountChange = (value) => {
-    // Convert the value to a number
-    const numericValue = Number(value);
-  
-    // Check if the value is a valid number and greater than or equal to 0
-    if (!isNaN(numericValue) && numericValue >= 0) {
-      // Update the state or perform the necessary action
-      setAmount(numericValue);
-    } else {
-      // Optionally, you can handle invalid input here (e.g., show an error message)
-      console.log("Invalid input. Please enter a positive number.");
+  const handleDeleteTransaction = async (transaction) => {
+    if (!selectedGroup) return;
+    const confirmDelete = window.confirm(
+      `Are you sure you want to delete this transaction?`
+    );
+    if (!confirmDelete) return;
+    try {
+      await api.deleteTransaction(selectedGroup, transaction);
+      alert("Transaction deleted successfully!");
+
+      // Refresh data
+      const balance = await api.fetchBalanceData(selectedGroup);
+      const recentTransactions = await api.fetchRecentTransactions(selectedGroup);
+      setBalanceData(balance);
+      setReTransactions(recentTransactions);
+    } catch (error) {
+      alert("Failed to delete transaction: " + error.message);
     }
+
+
   };
 
 
@@ -251,8 +259,7 @@ const Home = () => {
                     label="Amount"
                     type="number"
                     value={amount}
-                    onChange={(e) => handleAmountChange(e.target.value)}
-                    inputProps={{ min: 0 }} // Prevent negative numbers
+                    onChange={(e) => setAmount(e.target.value)}
                     fullWidth
                     margin="normal"
                   />
@@ -300,7 +307,6 @@ const Home = () => {
                       Simplify Debts
                     </Button>
                   </Box>
-
               </>
             )}
           </Box>
@@ -310,31 +316,41 @@ const Home = () => {
         <Grid item xs={12} md={4}>
           <Paper
             elevation={3}
-            style={{ padding: "16px", maxHeight: "400px", overflowY: "auto" }}
+            style={{ padding: "15px", maxHeight: "4000px", overflowY: "auto" }}
           >
             <Typography variant="h6" gutterBottom>
               Recent Transactions
             </Typography>
             <List>
               {reTransactions.length > 0 ? (
-                reTransactions.slice(0, 10).map((reTransactions, index) => (
+                reTransactions.slice(0, 10).map((reTransaction, index) => (
                   <ListItem key={index}>
                     <ListItemText
-                      primary={`From: ${reTransactions.from} to: ${reTransactions.to}`}
+                      primary={`From: ${reTransaction.from} to: ${reTransaction.to}`}
                       secondary={
                         <>
-                          <span>Amount: ${reTransactions.amount.toFixed(2)}</span>
+                          <span>Amount: ${reTransaction.amount.toFixed(2)}</span>
                           <br />
-                          <span>Time: {new Date(reTransactions.timestamp).toLocaleString()}</span>
+                          <span>Time: {new Date(reTransaction.timestamp).toLocaleString()}</span>
                           <br />
-                          <span>Category: {reTransactions.category}</span>
+                          <span>Category: {reTransaction.category}</span>
                           <br />
                           <span>
-                            Explanation: {reTransactions.explanation ? reTransactions.explanation : "No Explanation"}
+                            Explanation: {reTransaction.explanation ? reTransaction.explanation : "No Explanation"}
                           </span>
                         </>
                       }
                     />
+
+                    <Button
+                      variant="contained"
+                      color="secondary"
+                      onClick={() => handleDeleteTransaction(reTransactions[index])}
+                      style={{ marginLeft: "10px" }}
+                    >
+                      Delete
+                    </Button>
+
                   </ListItem>
                 ))
               ) : (
@@ -380,6 +396,15 @@ const Home = () => {
                           </>
                         }
                       />
+
+                      <Button
+                        variant="contained"
+                        color="secondary"
+                        onClick={() => handleDeleteTransaction(transactions[index])}
+                        style={{ marginLeft: "10px" }}
+                      >
+                        Delete
+                      </Button>
                     </ListItem>
                   ))
                 ) : (
