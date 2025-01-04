@@ -67,3 +67,28 @@ class ExpenseGraph:
                 transaction['from'] = key
                 transactions.append(transaction)
         return transactions
+    
+    def del_transaction(self, from_user, to_user, amount, category, timestamp=None, explanation=None):
+        """Delete a transaction between users and update the balance graph."""
+        transaction_to_remove = None
+            
+        # Search for the transaction explicitly
+        for transaction in self.graph[from_user]:
+            if (
+                transaction["to"] == to_user and
+                transaction["amount"] == amount and
+                transaction["category"] == category and
+                transaction.get("timestamp") == timestamp and
+                transaction.get("explanation") == explanation
+            ):
+                transaction_to_remove = transaction
+                break
+        
+        if transaction_to_remove is None:
+            raise ValueError("Transaction not found in the list.")
+        
+        # Remove the transaction
+        self.graph[from_user].remove(transaction_to_remove)
+
+        # Update the balance graph
+        self.balance_graph.add_edge(to_user, from_user, amount)
