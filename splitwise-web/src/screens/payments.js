@@ -450,7 +450,7 @@ const PaymentsPage = () => {
               <Typography
                 variant="h6"
                 sx={{
-                  color: foundUser ? "#7deea6" : "#e86448",
+                  color: foundUser ? "#61bb82 " : "#e86448",
                   fontWeight: "bold",
                   marginTop: 2,
                 }}
