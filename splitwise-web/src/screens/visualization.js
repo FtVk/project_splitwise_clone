@@ -8,8 +8,15 @@ import {
   CardContent,
   CircularProgress,
 } from "@mui/material";
-import { PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer } from "recharts";
-import api from "../services/api"; // Assuming your API utility is in ../api
+import {
+  PieChart,
+  Pie,
+  Cell,
+  Tooltip,
+  Legend,
+  ResponsiveContainer,
+} from "recharts";
+import api from "../services/api";
 
 const COLORS = ["#8884d8", "#82ca9d", "#ffc658", "#ff8042", "#ffbb28", "#a4de6c"];
 
@@ -33,9 +40,15 @@ const VisualizationPage = () => {
     if (selectedGroup) {
       setLoading(true);
       api.fetchGroupTransactions(selectedGroup).then((data) => {
-        const filteredTransactions = data.filter((t) => t.category !== "payment");
+        // Filter transactions: exclude "payment" category and future timestamps
+        const currentTime = new Date();
+        const filteredTransactions = data.filter(
+          (t) => t.category !== "payment" && new Date(t.timestamp) <= currentTime
+        );
+
         setTransactions(filteredTransactions);
 
+        // Create chart data from filtered transactions
         const categoryMap = {};
         filteredTransactions.forEach((t) => {
           if (!categoryMap[t.category]) {
