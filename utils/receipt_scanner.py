@@ -1,11 +1,7 @@
-import pytesseract
-from PIL import Image, ImageEnhance, ImageFilter
 import re
 import os
-
-# Set the Tesseract OCR command path
-# pytesseract.pytesseract.tesseract_cmd = r"C:\Program Files\Tesseract-OCR\tesseract.exe"
-
+import pytesseract
+from PIL import Image, ImageEnhance, ImageFilter
 
 def process_expense_receipt(image_path):
     """
@@ -24,7 +20,7 @@ def process_expense_receipt(image_path):
     try:
         # Process the image
         result = extract_receipt_details(image_path)
-        if isinstance(result, dict) and "error" in result[0]:
+        if isinstance(result, tuple) and "error" in result[0]:
             return result[0]  # Propagate OCR or extraction error
         
     except Exception as e:
@@ -149,7 +145,7 @@ def process_payment_receipt(image_path, name):
         
         # Search for the amount near keywords
         amount_match = re.search(r"(Total|Amount|TOTAL|AMOUNT):?\s*\$?(\d{1,3}(?:,\d{3})*(?:\.\d{2})?)", text, re.IGNORECASE)
-        amount = amount_match.group(2) if amount_match else "No amount found in the receipt text."
+        amount = amount_match.group(2) if amount_match else None
         
         # Check if the name is found in the text
         name_found = name.lower() in text.lower()
