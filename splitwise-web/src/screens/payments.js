@@ -138,7 +138,6 @@ const handleCameraClick = async (setSelectedFile) => {
         container.style.left = "0";
         container.style.width = "100%";
         container.style.height = "100%";
-        container.style
         container.style.backgroundColor = "rgba(0, 0, 0, 0.8)";
         container.style.zIndex = "1000";
         container.style.overflowY = "auto";
