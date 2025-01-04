@@ -97,7 +97,6 @@ const SplitBill = () => {
       setWhoAte(resetSplit);
     }
   };
-  };
 
   const handleFileUpload = (event) => {
     setSelectedFile(event.target.files[0]);
