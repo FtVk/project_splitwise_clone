@@ -416,7 +416,7 @@ def scan_payment():
         # Perform OCR using scanner logic
         amount, name_found = scanner.process_payment_receipt(file_path, name)
         if amount is None:  # Check if amount extraction failed
-            return jsonify({'error': 'Amount could not be extracted from the photo.'}), 422
+            return jsonify({'error': 'Could not extract the desired data from the photo'}), 422
         return jsonify({'amount': amount, 'name_found': name_found})
     except Exception as e:
         print(f"Error processing receipt: {e}")
