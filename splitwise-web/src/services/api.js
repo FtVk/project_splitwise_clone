@@ -18,7 +18,7 @@ const api = {
     axios
       .get(`${API_BASE_URL}/groups/${groupName}/transactions`)
       .then((res) => res.data.transactions),
-
+      
   addMemberToGroup: (groupName, memberName) =>
     axios.post(`${API_BASE_URL}/groups/${groupName}/members`, { name: memberName }).then((res) => res.data),
 
@@ -53,21 +53,21 @@ const api = {
       timestamp: grTransactionData.timestamp,
       explanation: grTransactionData.explanation,
     }).then((res) => res.data),
-
   extractFoods: (formData) =>
     axios
       .post(`${API_BASE_URL}/scan-receipt`, formData)
       .then((res) => res.data),
-
   scanPayment: (formData) =>
     axios
       .post(`${API_BASE_URL}/scan-payment`, formData)
       .then((res) => res.data),
-
   submitFoodAssignments: (assignments) =>
     axios
       .post(`${API_BASE_URL}/assignments`, assignments)
       .then((res) => res.data),
+
+  deleteTransaction: (groupName, deltransaction) =>
+    axios.post(`${API_BASE_URL}/groups/${groupName}/deltransactions`, deltransaction).then((res) => res.data),
 
 };
 
