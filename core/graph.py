@@ -29,7 +29,9 @@ class ExpenseGraph:
         self.graph[from_user].append(transaction)
 
         # Update the balance graph
-        self.balance_graph.add_edge(from_user, to_user, amount)
+        if transaction["timestamp"] <= datetime.utcnow().isoformat():
+            self.balance_graph.add_edge(from_user, to_user, amount)
+        
         
     def fetch_recent_transactions(self):
         # Assuming selected_group is a list of users in the group
