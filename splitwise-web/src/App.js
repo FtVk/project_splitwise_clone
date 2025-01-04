@@ -7,6 +7,7 @@ import Home from "./screens/Home";
 import PaymentsPage from "./screens/payments";
 import SplitBillPage from "./screens/splitbill";
 import VisualizationPage from "./screens/visualization";
+import MeExpensesPage from "./screens/expense";
 import logo from './logo.png';
 
 const App = () => {
@@ -25,7 +26,7 @@ const App = () => {
             <AppBar
                 position="static"
                 style={{
-                    background: "linear-gradient(90deg, #1e3a8a, #2563eb,rgb(220, 189, 255))",
+                    background: "linear-gradient(90deg,rgb(18, 34, 79), #1e3a8a, #2563eb,rgb(220, 189, 255))",
                     boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
                 }}
             >
@@ -56,6 +57,7 @@ const App = () => {
                                 fontSize: "16px",
                                 fontWeight: "500",
                                 color: "white",
+                                marginLeft: "40px",
                                 marginRight: "10px",
                                 transition: "transform 0.2s ease",
                             }}
@@ -119,6 +121,24 @@ const App = () => {
                             <FontAwesomeIcon icon={faChartPie} style={{ marginRight: "5px" }} />
                             Visualization
                         </Button>
+
+                        <Button
+                            component={Link}
+                            to="/me-expenses"
+                            color="inherit"
+                            style={{
+                                fontSize: "16px",
+                                fontWeight: "500",
+                                color: "white",
+                                marginRight: "10px",
+                                transition: "transform 0.2s ease",
+                            }}
+                            onMouseOver={(e) => (e.target.style.transform = "scale(1.1)")}
+                            onMouseOut={(e) => (e.target.style.transform = "scale(1)")}
+                        >
+                            <FontAwesomeIcon icon={faChartPie} style={{ marginRight: "5px" }} />
+                            My Expenses
+                        </Button>
                     </Box>
 
                     {/* Mobile Menu */}
@@ -150,6 +170,9 @@ const App = () => {
                             <MenuItem onClick={handleMenuClose} component={Link} to="/visualization">
                                 Visualization
                             </MenuItem>
+                            <MenuItem onClick={handleMenuClose} component={Link} to="/me-expenses">
+                                My Expenses
+                            </MenuItem>
                         </Menu>
                     </Box>
                 </Toolbar>
@@ -160,6 +183,7 @@ const App = () => {
                 <Route path="/payments" element={<PaymentsPage />} />
                 <Route path="/splitbill" element={<SplitBillPage />} />
                 <Route path="/visualization" element={<VisualizationPage />} />
+                <Route path="/me-expenses" element={<MeExpensesPage />} />
             </Routes>
         </Router>
     );
