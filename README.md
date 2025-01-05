@@ -1,5 +1,3 @@
-
-
 # Expense Manager API
 
 This project is a Flask-based API for managing expenses, tracking group transactions, simplifying debts, and processing receipt data. It serves as a basic implementation of a "Splitwise"-like application with added features for receipt and payment processing using OCR.
@@ -7,38 +5,60 @@ This project is a Flask-based API for managing expenses, tracking group transact
 ## Features
 
 1. **Group Management**
+
    - Create, list, and manage groups.
    - Add members to groups.
-   
+
 2. **Expense Tracking**
+
    - Add, list, and search transactions within groups.
    - Fetch and manage balance graphs for groups.
    - Simplify group debts.
 
 3. **Split Bill**
+
    - Supports equal, ratio-based, and percentage-based bill splitting.
 
 4. **Receipt and Payment Processing**
+
    - OCR-based receipt scanning to extract transaction details.
    - Payment receipt processing for amount extraction.
 
-5. **Data Persistence**
+5. **Data Visualization**
+
+   - Visualize expenses in each group using a circular graph.
+
+6. **Recurrent Expenses**
+
+   - Add recurrent expenses (e.g., taxes) to a group named "Expense" automatically.
+
+7. **Data Persistence**
+
    - Group and transaction data are saved to and loaded from a JSON file.
 
 ## Installation
 
 1. Clone the repository:
+
    ```bash
    git clone https://github.com/your-repo/expense-manager.git
    cd expense-manager
    ```
 
-2. Install dependencies:
+2. Install Python dependencies:
+
    ```bash
    pip install -r requirements.txt
    ```
 
-3. Run the application:
+3. Install Node.js dependencies:
+
+   ```bash
+   npm install
+   ```
+
+4. Run the application:
+
    ```bash
    python app.py
    ```
@@ -46,16 +66,17 @@ This project is a Flask-based API for managing expenses, tracking group transact
 ## API Endpoints
 
 ### **Home**
+
 - **`GET /`**
   - Returns a welcome message.
 
 ### **Group Management**
+
 - **`GET /groups`**
   - Fetch all groups.
 - **`POST /groups`**
   - Create a new group.
   - **Payload**: `{ "name": "group_name" }`
-  
 - **`GET /groups/<group_name>/members`**
   - Fetch members of a specific group.
 - **`POST /groups/<group_name>/members`**
@@ -63,11 +84,12 @@ This project is a Flask-based API for managing expenses, tracking group transact
   - **Payload**: `{ "name": "member_name" }`
 
 ### **Transaction Management**
+
 - **`GET /groups/<group_name>/transactions`**
   - Fetch all transactions in a group.
 - **`POST /groups/<group_name>/transactions`**
   - Add a transaction to a group.
-  - **Payload**: 
+  - **Payload**:
     ```json
     {
       "from_user": "user_name",
@@ -82,9 +104,10 @@ This project is a Flask-based API for managing expenses, tracking group transact
   - Simplify group debts.
 
 ### **Split Bill**
+
 - **`POST /groups/<group_name>/group_transactions`**
   - Add a split bill transaction.
-  - **Payload**: 
+  - **Payload**:
     ```json
     {
       "from_user": "payer_name",
@@ -98,16 +121,36 @@ This project is a Flask-based API for managing expenses, tracking group transact
     ```
 
 ### **Balance Graph**
+
 - **`GET /groups/<group_name>/balance`**
   - Fetch the balance graph for a specific group.
 
+### **Expense Visualization**
+
+- **`GET /groups/<group_name>/expense-graph`**
+  - Fetch a circular graph visualizing expenses in the specified group.
+
+### **Recurrent Expenses**
+
+- **`POST /groups/Expense/recurrent`**
+  - Add a recurrent expense to the "Expense" group.
+  - **Payload**:
+    ```json
+    {
+      "amount": 200,
+      "category": "Tax",
+      "frequency": "Monthly"
+    }
+    ```
+
 ### **Receipt and Payment Processing**
+
 - **`POST /scan-receipt`**
   - Process a receipt image to extract item details.
   - **Form Data**: `photo` (file).
 - **`POST /scan-payment`**
   - Process a payment receipt image to extract the amount.
-  - **Form Data**: 
+  - **Form Data**:
     - `photo` (file)
     - `name` (string).
 
@@ -120,7 +163,7 @@ This project is a Flask-based API for managing expenses, tracking group transact
   - `balance_calculation.py`: Balance graph calculation logic.
 - `models/`: Contains data models for `Group` and `User`.
 - `utils/`: Utilities, including the `receipt_scanner`.
-- `data/graph.json`: Stores persistent group and transaction data.
+- `data/`: Stores persistent group and transaction data.
 - `uploads/`: Stores uploaded receipt images.
 
 ## Requirements
@@ -130,6 +173,7 @@ This project is a Flask-based API for managing expenses, tracking group transact
 - Flask-CORS
 - Pillow
 - pytesseract (for OCR)
+- Node.js and npm
 
 ## Running Tests
 
@@ -138,3 +182,4 @@ To test the application, use tools like Postman or cURL to interact with the end
 ## License
 
 This project is open-source and available under the MIT License.
+
