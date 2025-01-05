@@ -1,154 +1,1356 @@
 {
     "groups": {
-        "friends": {
+        "Family": {
             "nodes": [
-                "Me",
-                "fatemeh",
-                "hedieh"
-            ],
-            "edges": [
-                {
-                    "from": "Me",
-                    "to": "fatemeh",
-                    "amount": 25.0,
-                    "category": "food",
-                    "timestamp": "2024-12-27T15:46:19.628678"
-                },
-                {
-                    "from": "Me",
-                    "to": "fatemeh",
-                    "amount": 40,
-                    "category": "food",
-                    "timestamp": "2024-12-27T15:46:19.628689"
-                },
-                {
-                    "from": "Me",
-                    "to": "fatemeh",
-                    "amount": 40,
-                    "category": "food",
-                    "timestamp": "2024-12-27T15:46:19.628692"
-                },
-                {
-                    "from": "Me",
-                    "to": "fatemeh",
-                    "amount": 40,
-                    "category": "food",
-                    "timestamp": "2024-12-27T15:46:19.628695"
-                },
-                {
-                    "from": "Me",
-                    "to": "fatemeh",
-                    "amount": 40,
-                    "category": "food",
-                    "timestamp": "2024-12-27T15:46:19.628697"
-                },
-                {
-                    "from": "Me",
-                    "to": "fatemeh",
-                    "amount": 40,
-                    "category": "food",
-                    "timestamp": "2024-12-27T15:46:25.789965"
-                },
-                {
-                    "from": "fatemeh",
-                    "to": "Me",
-                    "amount": 25,
-                    "category": "trip",
-                    "timestamp": "2024-12-27T15:55:55.120576"
-                },
-                {
-                    "from": "fatemeh",
-                    "to": "Me",
-                    "amount": 25,
-                    "category": "snap",
-                    "timestamp": "2024-12-27T15:57:26.922741"
-                },
-                {
-                    "from": "fatemeh",
-                    "to": "Me",
-                    "amount": 25,
-                    "category": "food",
-                    "timestamp": "2024-12-27T15:58:56.577430"
-                }
-            ],
-            "balance_graph": {
-                "nodes": [
-                    "Me",
-                    "fatemeh"
-                ],
-                "edges": [
-                    {
-                        "from": "Me",
-                        "to": "fatemeh",
-                        "amount": 600.0
-                    },
-                    {
-                        "from": "fatemeh",
-                        "to": "Me",
-                        "amount": 75
-                    }
-                ]
-            }
-        },
-        "family": {
-            "nodes": [
+                "maman",
                 "Me",
                 "baba",
-                "maman"
+                "sister",
+                "brother"
             ],
             "edges": [
                 {
                     "from": "Me",
                     "to": "maman",
-                    "amount": 41.6,
-                    "category": "food",
-                    "timestamp": "2024-12-27T17:55:10.820394"
+                    "amount": 100.0,
+                    "category": "dinner",
+                    "timestamp": "2025-01-04T12:32:54.681Z",
+                    "explanation": ""
+                },
+                {
+                    "from": "Me",
+                    "to": "brother",
+                    "amount": 100.0,
+                    "category": "dinner",
+                    "timestamp": "2025-01-04T12:32:54.681Z",
+                    "explanation": ""
+                },
+                {
+                    "from": "Me",
+                    "to": "sister",
+                    "amount": 100.0,
+                    "category": "dinner",
+                    "timestamp": "2025-01-04T12:32:54.681Z",
+                    "explanation": ""
                 },
                 {
                     "from": "Me",
                     "to": "baba",
-                    "amount": 20,
-                    "category": "food",
-                    "timestamp": "2024-12-27T18:00:34.555074"
+                    "amount": 100.0,
+                    "category": "dinner",
+                    "timestamp": "2025-01-04T12:32:54.681Z",
+                    "explanation": ""
                 },
                 {
-                    "from": "maman",
-                    "to": "Me",
-                    "amount": 1.9200000000000002,
-                    "category": "snap",
-                    "timestamp": "2024-12-27T17:56:27.390934"
+                    "from": "Me",
+                    "to": "baba",
+                    "amount": 40,
+                    "category": "payment",
+                    "timestamp": "2025-01-04T16:01:55.948Z",
+                    "explanation": null
                 },
                 {
-                    "from": "maman",
+                    "from": "Me",
+                    "to": "baba",
+                    "amount": 80,
+                    "category": "payment",
+                    "timestamp": "2025-01-04T16:02:09.778Z",
+                    "explanation": null
+                },
+                {
+                    "from": "Me",
+                    "to": "baba",
+                    "amount": 160,
+                    "category": "payment",
+                    "timestamp": "2025-01-04T16:02:46.871Z",
+                    "explanation": null
+                },
+                {
+                    "from": "Me",
+                    "to": "baba",
+                    "amount": 320,
+                    "category": "payment",
+                    "timestamp": "2025-01-04T16:02:57.083Z",
+                    "explanation": null
+                },
+                {
+                    "from": "Me",
+                    "to": "baba",
+                    "amount": 580,
+                    "category": "payment",
+                    "timestamp": "2025-01-04T17:12:34.603Z",
+                    "explanation": null
+                },
+                {
+                    "from": "brother",
+                    "to": "sister",
+                    "amount": 100,
+                    "category": "lunch",
+                    "timestamp": "2025-01-04T12:33:31.404109",
+                    "explanation": ""
+                },
+                {
+                    "from": "brother",
+                    "to": "baba",
+                    "amount": 200,
+                    "category": "coffee",
+                    "timestamp": "2025-01-04T16:05:14.253983",
+                    "explanation": ""
+                },
+                {
+                    "from": "brother",
+                    "to": "sister",
+                    "amount": 100,
+                    "category": "dinner",
+                    "timestamp": "2025-01-04T16:51:06.889765",
+                    "explanation": ""
+                },
+                {
+                    "from": "baba",
                     "to": "Me",
-                    "amount": 1.9200000000000002,
-                    "category": "snap",
-                    "timestamp": "2024-12-27T17:57:10.677118"
+                    "amount": 50,
+                    "category": "snapp",
+                    "timestamp": "2025-01-04T12:34:17.747851",
+                    "explanation": ""
                 },
                 {
                     "from": "baba",
                     "to": "maman",
+                    "amount": 40,
+                    "category": "coffee",
+                    "timestamp": "2025-01-04T12:34:44.065064",
+                    "explanation": ""
+                },
+                {
+                    "from": "baba",
+                    "to": "Me",
+                    "amount": 200,
+                    "category": "snapp",
+                    "timestamp": "2025-01-04T16:13:21.712390",
+                    "explanation": ""
+                },
+                {
+                    "from": "baba",
+                    "to": "Me",
+                    "amount": 920,
+                    "category": "Payment",
+                    "timestamp": "2025-01-04T17:10:07.741517",
+                    "explanation": ""
+                },
+                {
+                    "from": "baba",
+                    "to": "Me",
+                    "amount": 900,
+                    "category": "lunch",
+                    "timestamp": "2025-01-04T17:11:27.644835",
+                    "explanation": ""
+                },
+                {
+                    "from": "baba",
+                    "to": "Me",
+                    "amount": 10,
+                    "category": "snapp",
+                    "timestamp": "2025-01-04T17:12:10.917591",
+                    "explanation": ""
+                },
+                {
+                    "from": "sister",
+                    "to": "maman",
+                    "amount": 150,
+                    "category": "dinner",
+                    "timestamp": "2025-01-04T16:03:52.371136",
+                    "explanation": ""
+                },
+                {
+                    "from": "sister",
+                    "to": "Me",
+                    "amount": 700,
+                    "category": "payment",
+                    "timestamp": "2025-01-04T16:50:37.395Z",
+                    "explanation": null
+                },
+                {
+                    "from": "sister",
+                    "to": "brother",
                     "amount": 50,
-                    "category": "food",
-                    "timestamp": "2024-12-27T18:01:01.553735"
+                    "category": "Payment",
+                    "timestamp": "2025-01-04T16:53:22.071695",
+                    "explanation": ""
+                },
+                {
+                    "from": "maman",
+                    "to": "brother",
+                    "amount": 70,
+                    "category": "coffee",
+                    "timestamp": "2025-01-04T16:56:31.084162",
+                    "explanation": ""
+                },
+                {
+                    "from": "maman",
+                    "to": "Me",
+                    "amount": 930,
+                    "category": "payment",
+                    "timestamp": "2025-01-04T17:09:48.770Z",
+                    "explanation": null
                 }
             ],
             "balance_graph": {
                 "nodes": [
+                    "maman",
                     "Me",
                     "baba",
-                    "maman"
+                    "sister",
+                    "brother"
                 ],
                 "edges": [
                     {
                         "from": "Me",
                         "to": "maman",
-                        "amount": 57.76
+                        "amount": 400.0
+                    },
+                    {
+                        "from": "Me",
+                        "to": "brother",
+                        "amount": 400.0
+                    },
+                    {
+                        "from": "Me",
+                        "to": "sister",
+                        "amount": 400.0
+                    },
+                    {
+                        "from": "Me",
+                        "to": "baba",
+                        "amount": 5120.0
+                    },
+                    {
+                        "from": "brother",
+                        "to": "sister",
+                        "amount": 850.0
+                    },
+                    {
+                        "from": "brother",
+                        "to": "baba",
+                        "amount": 800
+                    },
+                    {
+                        "from": "brother",
+                        "to": "Me",
+                        "amount": 330.0
+                    },
+                    {
+                        "from": "baba",
+                        "to": "Me",
+                        "amount": 8320
                     },
                     {
                         "from": "baba",
                         "to": "maman",
-                        "amount": 29.999999999999993
+                        "amount": 160
+                    },
+                    {
+                        "from": "sister",
+                        "to": "maman",
+                        "amount": 600
+                    },
+                    {
+                        "from": "sister",
+                        "to": "Me",
+                        "amount": 2800
+                    },
+                    {
+                        "from": "sister",
+                        "to": "brother",
+                        "amount": 200
+                    },
+                    {
+                        "from": "maman",
+                        "to": "brother",
+                        "amount": 280
+                    },
+                    {
+                        "from": "maman",
+                        "to": "Me",
+                        "amount": 3720
+                    }
+                ]
+            }
+        },
+        "Coworkers": {
+            "nodes": [
+                "Rachel",
+                "Steve",
+                "Me",
+                "Sarah",
+                "Linda",
+                "Jack",
+                "Tom",
+                "Angela",
+                "Nancy"
+            ],
+            "edges": [
+                {
+                    "from": "Nancy",
+                    "to": "Steve",
+                    "amount": 50,
+                    "category": "lunch",
+                    "timestamp": "2024-12-28T12:34:10.612393",
+                    "explanation": "the rainy day on roof"
+                },
+                {
+                    "from": "Nancy",
+                    "to": "Rachel",
+                    "amount": 200,
+                    "category": "Payment",
+                    "timestamp": "2025-01-02T12:36:17.594805",
+                    "explanation": ""
+                },
+                {
+                    "from": "Nancy",
+                    "to": "Steve",
+                    "amount": 50,
+                    "category": "Payment",
+                    "timestamp": "2025-01-02T17:49:23.364147",
+                    "explanation": ""
+                },
+                {
+                    "from": "Me",
+                    "to": "Nancy",
+                    "amount": 100,
+                    "category": "lunch",
+                    "timestamp": "2024-12-28T13:45:25.145533",
+                    "explanation": "the day we ditched work"
+                },
+                {
+                    "from": "Me",
+                    "to": "Rachel",
+                    "amount": 200,
+                    "category": "Payment",
+                    "timestamp": "2025-01-03T07:22:29.358478",
+                    "explanation": ""
+                },
+                {
+                    "from": "Jack",
+                    "to": "Steve",
+                    "amount": 20,
+                    "category": "snapp",
+                    "timestamp": "2024-12-28T15:18:02.460830",
+                    "explanation": "to get to the subway"
+                },
+                {
+                    "from": "Jack",
+                    "to": "Tom",
+                    "amount": 200,
+                    "category": "Payment",
+                    "timestamp": "2025-01-02T17:50:00.100674",
+                    "explanation": ""
+                },
+                {
+                    "from": "Steve",
+                    "to": "Jack",
+                    "amount": 20.893399339933993,
+                    "category": "dinner",
+                    "timestamp": "2024-12-31T08:41:45.752Z",
+                    "explanation": "birthday party for Tom"
+                },
+                {
+                    "from": "Steve",
+                    "to": "Tom",
+                    "amount": 10.107887788778877,
+                    "category": "dinner",
+                    "timestamp": "2024-12-31T08:41:45.752Z",
+                    "explanation": "birthday party for Tom"
+                },
+                {
+                    "from": "Steve",
+                    "to": "Me",
+                    "amount": 3.388118811881188,
+                    "category": "dinner",
+                    "timestamp": "2024-12-31T08:41:45.752Z",
+                    "explanation": "birthday party for Tom"
+                },
+                {
+                    "from": "Steve",
+                    "to": "Linda",
+                    "amount": 3.388118811881188,
+                    "category": "dinner",
+                    "timestamp": "2024-12-31T08:41:45.752Z",
+                    "explanation": "birthday party for Tom"
+                },
+                {
+                    "from": "Steve",
+                    "to": "Me",
+                    "amount": 51.5,
+                    "category": "dinner",
+                    "timestamp": "2025-01-03T08:44:19.613Z",
+                    "explanation": ""
+                },
+                {
+                    "from": "Steve",
+                    "to": "Rachel",
+                    "amount": 6.087756778964668,
+                    "category": "dinner",
+                    "timestamp": "2025-01-05T06:50:48.553Z",
+                    "explanation": ""
+                },
+                {
+                    "from": "Steve",
+                    "to": "Me",
+                    "amount": 6.087756778964668,
+                    "category": "dinner",
+                    "timestamp": "2025-01-05T06:50:48.553Z",
+                    "explanation": ""
+                },
+                {
+                    "from": "Steve",
+                    "to": "Linda",
+                    "amount": 40.48358258011503,
+                    "category": "dinner",
+                    "timestamp": "2025-01-05T06:50:48.553Z",
+                    "explanation": ""
+                },
+                {
+                    "from": "Steve",
+                    "to": "Jack",
+                    "amount": 34.395825801150366,
+                    "category": "dinner",
+                    "timestamp": "2025-01-05T06:50:48.553Z",
+                    "explanation": ""
+                },
+                {
+                    "from": "Steve",
+                    "to": "Tom",
+                    "amount": 15.168660640920296,
+                    "category": "dinner",
+                    "timestamp": "2025-01-05T06:50:48.553Z",
+                    "explanation": ""
+                },
+                {
+                    "from": "Steve",
+                    "to": "Angela",
+                    "amount": 15.168660640920296,
+                    "category": "dinner",
+                    "timestamp": "2025-01-05T06:50:48.553Z",
+                    "explanation": ""
+                },
+                {
+                    "from": "Steve",
+                    "to": "Me",
+                    "amount": 1466.1197713904467,
+                    "category": "payment",
+                    "timestamp": "2025-01-05T06:51:20.877Z",
+                    "explanation": null
+                },
+                {
+                    "from": "Rachel",
+                    "to": "Nancy",
+                    "amount": 27.34417419884963,
+                    "category": "dinner",
+                    "timestamp": "2025-01-03T08:07:00.569Z",
+                    "explanation": ""
+                },
+                {
+                    "from": "Rachel",
+                    "to": "Tom",
+                    "amount": 6.087756778964668,
+                    "category": "dinner",
+                    "timestamp": "2025-01-03T08:07:00.569Z",
+                    "explanation": ""
+                },
+                {
+                    "from": "Rachel",
+                    "to": "Sarah",
+                    "amount": 34.395825801150366,
+                    "category": "dinner",
+                    "timestamp": "2025-01-03T08:07:00.569Z",
+                    "explanation": ""
+                },
+                {
+                    "from": "Rachel",
+                    "to": "Linda",
+                    "amount": 34.395825801150366,
+                    "category": "dinner",
+                    "timestamp": "2025-01-03T08:07:00.569Z",
+                    "explanation": ""
+                },
+                {
+                    "from": "Rachel",
+                    "to": "Jack",
+                    "amount": 15.168660640920296,
+                    "category": "dinner",
+                    "timestamp": "2025-01-03T08:07:00.569Z",
+                    "explanation": ""
+                },
+                {
+                    "from": "Rachel",
+                    "to": "Steve",
+                    "amount": 100.0,
+                    "category": "dinner",
+                    "timestamp": "2025-01-03T08:40:19.537Z",
+                    "explanation": ""
+                },
+                {
+                    "from": "Rachel",
+                    "to": "Steve",
+                    "amount": 103.0,
+                    "category": "dinner",
+                    "timestamp": "2025-01-03T08:41:18.145Z",
+                    "explanation": ""
+                },
+                {
+                    "from": "Linda",
+                    "to": "Angela",
+                    "amount": 200,
+                    "category": "Payment",
+                    "timestamp": "2025-01-05T04:09:31.755174",
+                    "explanation": ""
+                },
+                {
+                    "from": "Angela",
+                    "to": "Tom",
+                    "amount": 112.5,
+                    "category": "shopping",
+                    "timestamp": "2025-01-05T04:44:26.335Z",
+                    "explanation": "shopping for new year"
+                },
+                {
+                    "from": "Angela",
+                    "to": "Linda",
+                    "amount": 112.5,
+                    "category": "shopping",
+                    "timestamp": "2025-01-05T04:44:26.335Z",
+                    "explanation": "shopping for new year"
+                },
+                {
+                    "from": "Angela",
+                    "to": "Nancy",
+                    "amount": 112.5,
+                    "category": "shopping",
+                    "timestamp": "2025-01-05T04:44:26.335Z",
+                    "explanation": "shopping for new year"
+                },
+                {
+                    "from": "Angela",
+                    "to": "Me",
+                    "amount": 112.5,
+                    "category": "shopping",
+                    "timestamp": "2025-01-05T04:44:26.335Z",
+                    "explanation": "shopping for new year"
+                },
+                {
+                    "from": "Angela",
+                    "to": "Sarah",
+                    "amount": 112.5,
+                    "category": "shopping",
+                    "timestamp": "2025-01-05T04:44:26.335Z",
+                    "explanation": "shopping for new year"
+                },
+                {
+                    "from": "Angela",
+                    "to": "Rachel",
+                    "amount": 112.5,
+                    "category": "shopping",
+                    "timestamp": "2025-01-05T04:44:26.335Z",
+                    "explanation": "shopping for new year"
+                },
+                {
+                    "from": "Angela",
+                    "to": "Jack",
+                    "amount": 112.5,
+                    "category": "shopping",
+                    "timestamp": "2025-01-05T04:44:26.335Z",
+                    "explanation": "shopping for new year"
+                },
+                {
+                    "from": "Angela",
+                    "to": "Steve",
+                    "amount": 112.5,
+                    "category": "shopping",
+                    "timestamp": "2025-01-05T04:44:26.335Z",
+                    "explanation": "shopping for new year"
+                }
+            ],
+            "balance_graph": {
+                "nodes": [
+                    "Rachel",
+                    "Steve",
+                    "Me",
+                    "Sarah",
+                    "Linda",
+                    "Jack",
+                    "Tom",
+                    "Angela",
+                    "Nancy"
+                ],
+                "edges": [
+                    {
+                        "from": "Nancy",
+                        "to": "Steve",
+                        "amount": 3950.7723418241585
+                    },
+                    {
+                        "from": "Me",
+                        "to": "Rachel",
+                        "amount": 3105.8506491372254
+                    },
+                    {
+                        "from": "Me",
+                        "to": "Tom",
+                        "amount": 1430.3507335844533
+                    },
+                    {
+                        "from": "Jack",
+                        "to": "Tom",
+                        "amount": 3800.4659019229775
+                    },
+                    {
+                        "from": "Jack",
+                        "to": "Linda",
+                        "amount": 238.36801597825934
+                    },
+                    {
+                        "from": "Angela",
+                        "to": "Linda",
+                        "amount": 437.51899753492467
+                    },
+                    {
+                        "from": "Angela",
+                        "to": "Sarah",
+                        "amount": 947.3123418241549
+                    }
+                ]
+            }
+        },
+        "Friends from high school": {
+            "nodes": [
+                "Me"
+            ],
+            "edges": [],
+            "balance_graph": {
+                "nodes": [],
+                "edges": []
+            }
+        },
+        "expense": {
+            "nodes": [
+                "Me"
+            ],
+            "edges": [
+                {
+                    "from": "Me",
+                    "to": "government",
+                    "amount": 2240,
+                    "category": "payment",
+                    "timestamp": "2025-01-05T04:41:27.777Z",
+                    "explanation": null
+                },
+                {
+                    "from": "government",
+                    "to": "Me",
+                    "amount": 500,
+                    "category": "Income Taxes",
+                    "timestamp": "2024-12-31T20:30:00.000Z",
+                    "explanation": ""
+                },
+                {
+                    "from": "government",
+                    "to": "Me",
+                    "amount": 500,
+                    "category": "Income Taxes",
+                    "timestamp": "2025-01-30T20:30:00+00:00",
+                    "explanation": ""
+                },
+                {
+                    "from": "government",
+                    "to": "Me",
+                    "amount": 500,
+                    "category": "Income Taxes",
+                    "timestamp": "2025-03-01T20:30:00+00:00",
+                    "explanation": ""
+                },
+                {
+                    "from": "government",
+                    "to": "Me",
+                    "amount": 500,
+                    "category": "Income Taxes",
+                    "timestamp": "2025-03-31T20:30:00+00:00",
+                    "explanation": ""
+                },
+                {
+                    "from": "government",
+                    "to": "Me",
+                    "amount": 500,
+                    "category": "Income Taxes",
+                    "timestamp": "2025-04-30T20:30:00+00:00",
+                    "explanation": ""
+                },
+                {
+                    "from": "government",
+                    "to": "Me",
+                    "amount": 500,
+                    "category": "Income Taxes",
+                    "timestamp": "2025-05-30T20:30:00+00:00",
+                    "explanation": ""
+                },
+                {
+                    "from": "government",
+                    "to": "Me",
+                    "amount": 500,
+                    "category": "Income Taxes",
+                    "timestamp": "2025-06-29T20:30:00+00:00",
+                    "explanation": ""
+                },
+                {
+                    "from": "government",
+                    "to": "Me",
+                    "amount": 500,
+                    "category": "Income Taxes",
+                    "timestamp": "2025-07-29T20:30:00+00:00",
+                    "explanation": ""
+                },
+                {
+                    "from": "government",
+                    "to": "Me",
+                    "amount": 500,
+                    "category": "Income Taxes",
+                    "timestamp": "2025-08-28T20:30:00+00:00",
+                    "explanation": ""
+                },
+                {
+                    "from": "government",
+                    "to": "Me",
+                    "amount": 500,
+                    "category": "Income Taxes",
+                    "timestamp": "2025-09-27T20:30:00+00:00",
+                    "explanation": ""
+                },
+                {
+                    "from": "government",
+                    "to": "Me",
+                    "amount": 500,
+                    "category": "Income Taxes",
+                    "timestamp": "2025-10-27T20:30:00+00:00",
+                    "explanation": ""
+                },
+                {
+                    "from": "government",
+                    "to": "Me",
+                    "amount": 500,
+                    "category": "Income Taxes",
+                    "timestamp": "2025-11-26T20:30:00+00:00",
+                    "explanation": ""
+                },
+                {
+                    "from": "government",
+                    "to": "Me",
+                    "amount": 500,
+                    "category": "Income Taxes",
+                    "timestamp": "2025-12-26T20:30:00+00:00",
+                    "explanation": ""
+                },
+                {
+                    "from": "government",
+                    "to": "Me",
+                    "amount": 200,
+                    "category": "Medicare Taxes",
+                    "timestamp": "2025-01-01T20:30:00.000Z",
+                    "explanation": ""
+                },
+                {
+                    "from": "government",
+                    "to": "Me",
+                    "amount": 200,
+                    "category": "Medicare Taxes",
+                    "timestamp": "2026-01-01T20:30:00+00:00",
+                    "explanation": ""
+                },
+                {
+                    "from": "government",
+                    "to": "Me",
+                    "amount": 200,
+                    "category": "Medicare Taxes",
+                    "timestamp": "2027-01-01T20:30:00+00:00",
+                    "explanation": ""
+                },
+                {
+                    "from": "government",
+                    "to": "Me",
+                    "amount": 200,
+                    "category": "Medicare Taxes",
+                    "timestamp": "2028-01-01T20:30:00+00:00",
+                    "explanation": ""
+                },
+                {
+                    "from": "government",
+                    "to": "Me",
+                    "amount": 200,
+                    "category": "Medicare Taxes",
+                    "timestamp": "2028-12-31T20:30:00+00:00",
+                    "explanation": ""
+                },
+                {
+                    "from": "government",
+                    "to": "Me",
+                    "amount": 200,
+                    "category": "Medicare Taxes",
+                    "timestamp": "2029-12-31T20:30:00+00:00",
+                    "explanation": ""
+                },
+                {
+                    "from": "government",
+                    "to": "Me",
+                    "amount": 300,
+                    "category": "Facility Costs",
+                    "timestamp": "2025-01-02T20:30:00.000Z",
+                    "explanation": ""
+                },
+                {
+                    "from": "government",
+                    "to": "Me",
+                    "amount": 300,
+                    "category": "Facility Costs",
+                    "timestamp": "2025-02-01T20:30:00+00:00",
+                    "explanation": ""
+                },
+                {
+                    "from": "government",
+                    "to": "Me",
+                    "amount": 300,
+                    "category": "Facility Costs",
+                    "timestamp": "2025-03-03T20:30:00+00:00",
+                    "explanation": ""
+                },
+                {
+                    "from": "government",
+                    "to": "Me",
+                    "amount": 300,
+                    "category": "Facility Costs",
+                    "timestamp": "2025-04-02T20:30:00+00:00",
+                    "explanation": ""
+                },
+                {
+                    "from": "government",
+                    "to": "Me",
+                    "amount": 300,
+                    "category": "Facility Costs",
+                    "timestamp": "2025-05-02T20:30:00+00:00",
+                    "explanation": ""
+                },
+                {
+                    "from": "government",
+                    "to": "Me",
+                    "amount": 300,
+                    "category": "Facility Costs",
+                    "timestamp": "2025-06-01T20:30:00+00:00",
+                    "explanation": ""
+                },
+                {
+                    "from": "government",
+                    "to": "Me",
+                    "amount": 300,
+                    "category": "Facility Costs",
+                    "timestamp": "2025-07-01T20:30:00+00:00",
+                    "explanation": ""
+                },
+                {
+                    "from": "government",
+                    "to": "Me",
+                    "amount": 300,
+                    "category": "Facility Costs",
+                    "timestamp": "2025-07-31T20:30:00+00:00",
+                    "explanation": ""
+                },
+                {
+                    "from": "government",
+                    "to": "Me",
+                    "amount": 300,
+                    "category": "Facility Costs",
+                    "timestamp": "2025-08-30T20:30:00+00:00",
+                    "explanation": ""
+                },
+                {
+                    "from": "government",
+                    "to": "Me",
+                    "amount": 300,
+                    "category": "Facility Costs",
+                    "timestamp": "2025-09-29T20:30:00+00:00",
+                    "explanation": ""
+                },
+                {
+                    "from": "government",
+                    "to": "Me",
+                    "amount": 300,
+                    "category": "Facility Costs",
+                    "timestamp": "2025-10-29T20:30:00+00:00",
+                    "explanation": ""
+                },
+                {
+                    "from": "government",
+                    "to": "Me",
+                    "amount": 300,
+                    "category": "Facility Costs",
+                    "timestamp": "2025-11-28T20:30:00+00:00",
+                    "explanation": ""
+                },
+                {
+                    "from": "government",
+                    "to": "Me",
+                    "amount": 300,
+                    "category": "Facility Costs",
+                    "timestamp": "2025-12-28T20:30:00+00:00",
+                    "explanation": ""
+                },
+                {
+                    "from": "government",
+                    "to": "Me",
+                    "amount": 500,
+                    "category": "Volunteer Support",
+                    "timestamp": "2025-01-03T20:30:00.000Z",
+                    "explanation": ""
+                },
+                {
+                    "from": "government",
+                    "to": "Me",
+                    "amount": 500,
+                    "category": "Volunteer Support",
+                    "timestamp": "2026-01-03T20:30:00+00:00",
+                    "explanation": ""
+                },
+                {
+                    "from": "government",
+                    "to": "Me",
+                    "amount": 500,
+                    "category": "Volunteer Support",
+                    "timestamp": "2027-01-03T20:30:00+00:00",
+                    "explanation": ""
+                },
+                {
+                    "from": "government",
+                    "to": "Me",
+                    "amount": 500,
+                    "category": "Volunteer Support",
+                    "timestamp": "2028-01-03T20:30:00+00:00",
+                    "explanation": ""
+                },
+                {
+                    "from": "government",
+                    "to": "Me",
+                    "amount": 500,
+                    "category": "Volunteer Support",
+                    "timestamp": "2029-01-02T20:30:00+00:00",
+                    "explanation": ""
+                },
+                {
+                    "from": "government",
+                    "to": "Me",
+                    "amount": 500,
+                    "category": "Volunteer Support",
+                    "timestamp": "2030-01-02T20:30:00+00:00",
+                    "explanation": ""
+                },
+                {
+                    "from": "government",
+                    "to": "Me",
+                    "amount": 100,
+                    "category": "Gangsters",
+                    "timestamp": "2025-01-04T20:30:00.000Z",
+                    "explanation": ""
+                },
+                {
+                    "from": "government",
+                    "to": "Me",
+                    "amount": 100,
+                    "category": "Gangsters",
+                    "timestamp": "2025-02-03T20:30:00+00:00",
+                    "explanation": ""
+                },
+                {
+                    "from": "government",
+                    "to": "Me",
+                    "amount": 100,
+                    "category": "Gangsters",
+                    "timestamp": "2025-03-05T20:30:00+00:00",
+                    "explanation": ""
+                },
+                {
+                    "from": "government",
+                    "to": "Me",
+                    "amount": 100,
+                    "category": "Gangsters",
+                    "timestamp": "2025-04-04T20:30:00+00:00",
+                    "explanation": ""
+                },
+                {
+                    "from": "government",
+                    "to": "Me",
+                    "amount": 100,
+                    "category": "Gangsters",
+                    "timestamp": "2025-05-04T20:30:00+00:00",
+                    "explanation": ""
+                },
+                {
+                    "from": "government",
+                    "to": "Me",
+                    "amount": 100,
+                    "category": "Gangsters",
+                    "timestamp": "2025-06-03T20:30:00+00:00",
+                    "explanation": ""
+                },
+                {
+                    "from": "government",
+                    "to": "Me",
+                    "amount": 100,
+                    "category": "Gangsters",
+                    "timestamp": "2025-07-03T20:30:00+00:00",
+                    "explanation": ""
+                },
+                {
+                    "from": "government",
+                    "to": "Me",
+                    "amount": 100,
+                    "category": "Gangsters",
+                    "timestamp": "2025-08-02T20:30:00+00:00",
+                    "explanation": ""
+                },
+                {
+                    "from": "government",
+                    "to": "Me",
+                    "amount": 100,
+                    "category": "Gangsters",
+                    "timestamp": "2025-09-01T20:30:00+00:00",
+                    "explanation": ""
+                },
+                {
+                    "from": "government",
+                    "to": "Me",
+                    "amount": 100,
+                    "category": "Gangsters",
+                    "timestamp": "2025-10-01T20:30:00+00:00",
+                    "explanation": ""
+                },
+                {
+                    "from": "government",
+                    "to": "Me",
+                    "amount": 100,
+                    "category": "Gangsters",
+                    "timestamp": "2025-10-31T20:30:00+00:00",
+                    "explanation": ""
+                },
+                {
+                    "from": "government",
+                    "to": "Me",
+                    "amount": 100,
+                    "category": "Gangsters",
+                    "timestamp": "2025-11-30T20:30:00+00:00",
+                    "explanation": ""
+                },
+                {
+                    "from": "government",
+                    "to": "Me",
+                    "amount": 100,
+                    "category": "Gangsters",
+                    "timestamp": "2025-12-30T20:30:00+00:00",
+                    "explanation": ""
+                }
+            ],
+            "balance_graph": {
+                "nodes": [
+                    "government",
+                    "Me"
+                ],
+                "edges": [
+                    {
+                        "from": "Me",
+                        "to": "government",
+                        "amount": 640.0
+                    }
+                ]
+            }
+        },
+        "Friends": {
+            "nodes": [
+                "Alice",
+                "Me",
+                "Carol",
+                "Helen",
+                "Bob",
+                "Leo",
+                "Dave",
+                "Grace"
+            ],
+            "edges": [
+                {
+                    "from": "Bob",
+                    "to": "Dave",
+                    "amount": 55.620000000000005,
+                    "category": "shopping",
+                    "timestamp": "2025-01-04T18:15:07.927345",
+                    "explanation": "for the birthday gift for thein mutual friend"
+                },
+                {
+                    "from": "Helen",
+                    "to": "Me",
+                    "amount": 30,
+                    "category": "lunch",
+                    "timestamp": "2025-01-04T18:17:06.996Z",
+                    "explanation": "a lunch to discuss a buisiness proposal"
+                },
+                {
+                    "from": "Helen",
+                    "to": "Grace",
+                    "amount": 40,
+                    "category": "lunch",
+                    "timestamp": "2025-01-04T18:17:06.996Z",
+                    "explanation": "a lunch to discuss a buisiness proposal"
+                },
+                {
+                    "from": "Helen",
+                    "to": "Alice",
+                    "amount": 50,
+                    "category": "lunch",
+                    "timestamp": "2025-01-04T18:17:06.996Z",
+                    "explanation": "a lunch to discuss a buisiness proposal"
+                },
+                {
+                    "from": "Helen",
+                    "to": "Dave",
+                    "amount": 60,
+                    "category": "lunch",
+                    "timestamp": "2025-01-04T18:17:06.996Z",
+                    "explanation": "a lunch to discuss a buisiness proposal"
+                },
+                {
+                    "from": "Helen",
+                    "to": "Leo",
+                    "amount": 70,
+                    "category": "lunch",
+                    "timestamp": "2025-01-04T18:17:06.996Z",
+                    "explanation": "a lunch to discuss a buisiness proposal"
+                },
+                {
+                    "from": "Grace",
+                    "to": "Alice",
+                    "amount": 60,
+                    "category": "dinner",
+                    "timestamp": "2025-01-04T18:47:09.833977",
+                    "explanation": "the dinner in italian restaurant"
+                },
+                {
+                    "from": "Leo",
+                    "to": "Dave",
+                    "amount": 87,
+                    "category": "coffee",
+                    "timestamp": "2025-01-04T18:47:36.900559",
+                    "explanation": ""
+                },
+                {
+                    "from": "Leo",
+                    "to": "Grace",
+                    "amount": 6.087756778964668,
+                    "category": "dinner",
+                    "timestamp": "2025-01-05T04:14:06.326Z",
+                    "explanation": ""
+                },
+                {
+                    "from": "Leo",
+                    "to": "Me",
+                    "amount": 21.25641741988496,
+                    "category": "dinner",
+                    "timestamp": "2025-01-05T04:14:06.326Z",
+                    "explanation": ""
+                },
+                {
+                    "from": "Leo",
+                    "to": "Helen",
+                    "amount": 34.395825801150366,
+                    "category": "dinner",
+                    "timestamp": "2025-01-05T04:14:06.326Z",
+                    "explanation": ""
+                },
+                {
+                    "from": "Leo",
+                    "to": "Carol",
+                    "amount": 34.395825801150366,
+                    "category": "dinner",
+                    "timestamp": "2025-01-05T04:14:06.326Z",
+                    "explanation": ""
+                },
+                {
+                    "from": "Leo",
+                    "to": "Bob",
+                    "amount": 15.168660640920296,
+                    "category": "dinner",
+                    "timestamp": "2025-01-05T04:14:06.326Z",
+                    "explanation": ""
+                },
+                {
+                    "from": "Alice",
+                    "to": "Leo",
+                    "amount": 42.857142857142854,
+                    "category": "lunch",
+                    "timestamp": "2025-01-05T04:12:23.238Z",
+                    "explanation": ""
+                },
+                {
+                    "from": "Alice",
+                    "to": "Grace",
+                    "amount": 42.857142857142854,
+                    "category": "lunch",
+                    "timestamp": "2025-01-05T04:12:23.238Z",
+                    "explanation": ""
+                },
+                {
+                    "from": "Alice",
+                    "to": "Me",
+                    "amount": 42.857142857142854,
+                    "category": "lunch",
+                    "timestamp": "2025-01-05T04:12:23.238Z",
+                    "explanation": ""
+                },
+                {
+                    "from": "Alice",
+                    "to": "Helen",
+                    "amount": 42.857142857142854,
+                    "category": "lunch",
+                    "timestamp": "2025-01-05T04:12:23.238Z",
+                    "explanation": ""
+                },
+                {
+                    "from": "Alice",
+                    "to": "Dave",
+                    "amount": 42.857142857142854,
+                    "category": "lunch",
+                    "timestamp": "2025-01-05T04:12:23.238Z",
+                    "explanation": ""
+                },
+                {
+                    "from": "Alice",
+                    "to": "Carol",
+                    "amount": 42.857142857142854,
+                    "category": "lunch",
+                    "timestamp": "2025-01-05T04:12:23.238Z",
+                    "explanation": ""
+                },
+                {
+                    "from": "Alice",
+                    "to": "Bob",
+                    "amount": 42.857142857142854,
+                    "category": "lunch",
+                    "timestamp": "2025-01-05T04:12:23.238Z",
+                    "explanation": ""
+                }
+            ],
+            "balance_graph": {
+                "nodes": [
+                    "Alice",
+                    "Me",
+                    "Carol",
+                    "Helen",
+                    "Bob",
+                    "Leo",
+                    "Dave",
+                    "Grace"
+                ],
+                "edges": [
+                    {
+                        "from": "Bob",
+                        "to": "Dave",
+                        "amount": 222.48000000000002
+                    },
+                    {
+                        "from": "Helen",
+                        "to": "Me",
+                        "amount": 120
+                    },
+                    {
+                        "from": "Helen",
+                        "to": "Grace",
+                        "amount": 160
+                    },
+                    {
+                        "from": "Helen",
+                        "to": "Alice",
+                        "amount": 200
+                    },
+                    {
+                        "from": "Helen",
+                        "to": "Dave",
+                        "amount": 240
+                    },
+                    {
+                        "from": "Helen",
+                        "to": "Leo",
+                        "amount": 280
+                    },
+                    {
+                        "from": "Grace",
+                        "to": "Alice",
+                        "amount": 240
+                    },
+                    {
+                        "from": "Leo",
+                        "to": "Dave",
+                        "amount": 348
+                    },
+                    {
+                        "from": "Leo",
+                        "to": "Grace",
+                        "amount": 12.175513557929335
+                    },
+                    {
+                        "from": "Leo",
+                        "to": "Me",
+                        "amount": 42.51283483976992
+                    },
+                    {
+                        "from": "Leo",
+                        "to": "Helen",
+                        "amount": 68.79165160230073
+                    },
+                    {
+                        "from": "Leo",
+                        "to": "Carol",
+                        "amount": 68.79165160230073
+                    },
+                    {
+                        "from": "Leo",
+                        "to": "Bob",
+                        "amount": 30.33732128184059
+                    },
+                    {
+                        "from": "Alice",
+                        "to": "Leo",
+                        "amount": 85.71428571428571
+                    },
+                    {
+                        "from": "Alice",
+                        "to": "Grace",
+                        "amount": 85.71428571428571
+                    },
+                    {
+                        "from": "Alice",
+                        "to": "Me",
+                        "amount": 85.71428571428571
+                    },
+                    {
+                        "from": "Alice",
+                        "to": "Helen",
+                        "amount": 85.71428571428571
+                    },
+                    {
+                        "from": "Alice",
+                        "to": "Dave",
+                        "amount": 85.71428571428571
+                    },
+                    {
+                        "from": "Alice",
+                        "to": "Carol",
+                        "amount": 85.71428571428571
+                    },
+                    {
+                        "from": "Alice",
+                        "to": "Bob",
+                        "amount": 85.71428571428571
                     }
                 ]
             }
