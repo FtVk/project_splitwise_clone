@@ -116,7 +116,7 @@ const PaymentsPage = () => {
     }
 
     if (paymentMethod === "cash") {
-      handleScan();
+      handleAddPayment();
     } else if (paymentMethod === "online") {
       const paymentUrl = "https://panel.zibal.ir/register";
       window.location.href = paymentUrl;
